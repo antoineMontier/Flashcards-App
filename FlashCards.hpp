@@ -20,6 +20,10 @@ class FlashCards{
         TTF_Font *global;
         TTF_Font *small;
         int screen;
+        SDL_Color title;
+        SDL_Color background;
+        SDL_Color buttonColor;
+        SDL_Color buttonFontColor;
 
     public:
 
@@ -34,6 +38,12 @@ class FlashCards{
         void displayReturnButton();
 
         void displayCreateButton();
+
+        void settingsScreen();
+
+        void homeScreen();
+
+        void creationScreen();
 
 
 
