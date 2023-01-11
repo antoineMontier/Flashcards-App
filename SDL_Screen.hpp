@@ -114,6 +114,8 @@ class SDL_Screen{
         /// @param height the height of the rectangle
         void emptyRect(int x, int y, int width, int height);//optimized
         void emptyRect(int x, int y, int width, int height, int rounding);
+        void emptyRect(int x, int y, int width, int height, int rounding, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha=255);
+
         //void emptyRect(int x, int y, int width, int height, int rounding_top_left, int rounding_top_right, int rounding_bottom_right, int rounding_bottom_left);//todo
         
         /// @brief creates a filled square
@@ -129,9 +131,12 @@ class SDL_Screen{
         /// @param height the height of the rectangle
         void filledRect(int x, int y, int width, int height);//optimized
         void filledRect(int x, int y, int width, int height, int rounding);//optimized
+        void filledRect(int x, int y, int width, int height, int rounding, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha=255);//optimized
+
         //void filledRect(int x, int y, int width, int height, int rounding_top_left, int rounding_top_right, int rounding_bottom_right, int rounding_bottom_left);//todo
 
         void filledCircle(int x, int y, int radius);//optimized
+        void filledCircle(int x, int y, int radius, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha=255);//optimized
         void filledCircle(int x, int y, int width, int height);//optimized
 
         void emptyCircle(int x, int y, int radius);//optimized

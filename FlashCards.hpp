@@ -4,6 +4,9 @@
 #define HOME 0
 #define SETTINGS (-1)
 
+
+#define PI (3.14159265)
+
 #include "SDL_Screen.hpp"
 
 class FlashCards{

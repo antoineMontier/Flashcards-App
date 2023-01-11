@@ -18,10 +18,14 @@ void FlashCards::run(){
     while(s->isRunning()){//main loop
 
         if(screen == HOME){
-            s->bg(100);
-            s->text(s->W()*0.5 - TTF_FontHeight(global)*1.1, 10, "Home", global);
-            //settings button
+
+            s->setColor(140, 255, 30);
+            s->bg();
             displaySettingsButton();
+            s->setColor(150, 160, 170);
+            s->text(s->W()*0.5 - TTF_FontHeight(global)*1.1, 10, "Home", global);
+
+            
         }else if(screen == SETTINGS){
             s->bg(150);
             s->text(s->W()*0.5 - TTF_FontHeight(global)*1.5, 10, "Settings", global);
@@ -78,7 +82,18 @@ void FlashCards::run(){
 
 
 void FlashCards::displaySettingsButton(){
-    s->emptyRect(s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.07, 5);
+    s->emptyRect(s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.07, 5, 60, 60, 60);
+    //settings logo
+    s->filledCircle(s->W()*0.01 + s->H()*0.07/2, s->H()*0.01 + s->H()*0.07/2, s->H()*0.07*0.37, 60, 60, 60);
+    s->filledCircle(s->W()*0.01 + s->H()*0.07/2, s->H()*0.01 + s->H()*0.07/2, s->H()*0.07*0.25);
+    int nb_spikes = 7;
+    for(int i=0; i<nb_spikes; i++){
+        double angle = 2*PI*i/(double)nb_spikes;
+        s->filledCircle(s->W()*.01 + s->H()*.07/2 + cos(angle)*s->H()*.07*.32,
+                        s->H()*.01 + s->H()*.07/2 + sin(angle)*s->H()*.07*.32,
+                        s->H()*.07*0.1,
+                        60, 60, 60);
+    }
 }
 
 void FlashCards::displayReturnButton(){
