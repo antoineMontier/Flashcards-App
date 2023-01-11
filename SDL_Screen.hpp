@@ -23,6 +23,10 @@ class SDL_Screen{
         double fps_max = 180;
         static bool instanceExist;
         bool program_running;
+        unsigned char _red;
+        unsigned char _green;
+        unsigned char _blue;
+        unsigned char _alpha;
 
         void SDL_ExitWithError(const char *string);
 
@@ -163,6 +167,8 @@ class SDL_Screen{
                     unsigned char red, unsigned char green=255, unsigned char blue=255, unsigned char alpha=255);
 
         void paragraph(int x, int y, const char* text, TTF_Font* font);
+
+        void displayPortions(int cut_x, int cut_y, unsigned char red=255, unsigned char green=0, unsigned char blue=0);
 };
 
 #endif

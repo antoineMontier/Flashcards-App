@@ -14,6 +14,10 @@ SDL_Screen::SDL_Screen(){
     _fps = 30.0;
     _ms = 0;
     program_running = true;
+        _red = 255;
+        _green = 255;
+        _blue = 255;
+        _alpha = 255;
 
     OpenSDL();
 }
@@ -28,6 +32,10 @@ SDL_Screen::SDL_Screen(double window_width, double window_height){
     _fps = 30.0;
     _ms = 0;
     program_running = true;
+        _red = 255;
+        _green = 255;
+        _blue = 255;
+        _alpha = 255;
 
     OpenSDL();
 }
@@ -42,6 +50,10 @@ SDL_Screen::SDL_Screen(const char* window_title){
     _fps = 30.0;
     _ms = 0;
     program_running = true;
+        _red = 255;
+        _green = 255;
+        _blue = 255;
+        _alpha = 255;
 
     OpenSDL();
 }
@@ -56,6 +68,10 @@ SDL_Screen::SDL_Screen(double window_width, double window_height, const char* wi
     _fps = 30.0;
     _ms = 0;
     program_running = true;
+        _red = 255;
+        _green = 255;
+        _blue = 255;
+        _alpha = 255;
 
     OpenSDL();
 }
@@ -74,6 +90,10 @@ SDL_Screen::SDL_Screen(double window_width, double window_height, double fps){
     _fps = fps;
     _ms = 0;
     program_running = true;
+        _red = 255;
+        _green = 255;
+        _blue = 255;
+        _alpha = 255;
 
     OpenSDL();
 }
@@ -92,6 +112,10 @@ SDL_Screen::SDL_Screen(double window_width, double window_height, const char* wi
     _fps = fps;
     _ms = 0;
     program_running = true;
+        _red = 255;
+        _green = 255;
+        _blue = 255;
+        _alpha = 255;
 
     OpenSDL();
 }
@@ -205,16 +229,28 @@ void SDL_Screen::point(double x, double y, double thickness){
 }
 
 void SDL_Screen::setColor(int red, int green, int blue, int alpha){
+    _red = red;
+    _green = green;
+    _blue = blue;
+    _alpha = alpha;
     if (SDL_SetRenderDrawColor(r, red, green, blue, alpha) != 0)
         SDL_ExitWithError("failed to set color");
 }
 
 void SDL_Screen::setColor(int red, int green, int blue){
+    _red = red;
+    _green = green;
+    _blue = blue;
+    _alpha = 255;
     if (SDL_SetRenderDrawColor(r, red, green, blue, 255) != 0)
         SDL_ExitWithError("failed to set color");
 }
 
 void SDL_Screen::setColor(int grey){
+    _red = grey;
+    _green = grey;
+    _blue = grey;
+    _alpha = 255;
     if (SDL_SetRenderDrawColor(r, grey, grey, grey, 255) != 0)
         SDL_ExitWithError("failed to set color");
 }
@@ -224,25 +260,18 @@ void SDL_Screen::bg(){
 }
 
 void SDL_Screen::bg(int grey){
-    //save the renderer color
-    Uint8 cr, cg, cb, ca;
-    if(SDL_GetRenderDrawColor(r, &cr, &cg, &cb, &ca) != 0)
-        SDL_ExitWithError("failed to save color");
-    setColor(grey);
+    SDL_SetRenderDrawColor(r, grey, grey, grey, 255);
     SDL_RenderClear(r);
     //reset the color as before
-    setColor(cr, cg, cb, ca);
+    SDL_SetRenderDrawColor(r, _red, _green, _blue, _alpha);
 }
 
 void SDL_Screen::bg(int red, int green, int blue){
     //save the renderer color
-    Uint8 cr, cg, cb, ca;
-    if(SDL_GetRenderDrawColor(r, &cr, &cg, &cb, &ca) != 0)
-        SDL_ExitWithError("failed to save color");
-    setColor(red, green, blue);
+    SDL_SetRenderDrawColor(r, red, green, blue, 255);
     SDL_RenderClear(r);
     //reset the color as before
-    setColor(cr, cg, cb, ca);
+    SDL_SetRenderDrawColor(r, _red, _green, _blue, _alpha);
 }
 
 void SDL_Screen::updateSize(){
@@ -616,14 +645,12 @@ bool SDL_Screen::setFont(TTF_Font **font, const char* font_file, int size)
 }
 
 bool SDL_Screen::text(int x, int y, const char * text, TTF_Font *font){
-    Uint8 cr, cg, cb, ca;
-    if(SDL_GetRenderDrawColor(r, &cr, &cg, &cb, &ca) != 0)
-        SDL_ExitWithError("failed to save color");
+
     int text_width;
     int text_height;
     SDL_Surface *surface;
     SDL_Texture *texture;
-    SDL_Color textColor = {cr, cg, cb, ca};
+    SDL_Color textColor = {_red, _green, _blue, _alpha};
 
     surface = TTF_RenderUTF8_Blended(font, text, textColor);
     texture = SDL_CreateTextureFromSurface(r, surface);
@@ -690,10 +717,8 @@ void SDL_Screen::paragraph(int x, int y, const char* text, TTF_Font* font,
 }
 
 void SDL_Screen::paragraph(int x, int y, const char* text, TTF_Font* font){
-    Uint8 cr, cg, cb, ca;
-    if(SDL_GetRenderDrawColor(r, &cr, &cg, &cb, &ca) != 0)
-        SDL_ExitWithError("failed to save color");
-    SDL_Color text_color = {cr, cg, cb, ca};
+
+    SDL_Color text_color = {_red, _green, _blue, _alpha};
     // Split the text by newline characters
     std::stringstream textStream(text);
     std::string line;
@@ -715,4 +740,13 @@ void SDL_Screen::paragraph(int x, int y, const char* text, TTF_Font* font){
         //next line of text
         y += TTF_FontHeight(font);
     }
+}
+
+void SDL_Screen::displayPortions(int cut_x, int cut_y, unsigned char red, unsigned char green, unsigned char blue){
+    SDL_SetRenderDrawColor(r, red, green, blue, 255);
+    for(int i = 0; i <= cut_x; i++)
+        SDL_RenderDrawLine(r, i * (double)(_width - 1)/cut_x,  0, i*(double)(_width - 1)/cut_x, _height);//vertical lines
+    for(int i = 0; i <= cut_y; i++)
+        SDL_RenderDrawLine(r, 0, i * (double)(_height - 1)/cut_y,  (_width), i*(double)(_height - 1)/cut_y);//horizontal lines
+    SDL_SetRenderDrawColor(r, _red, _green, _blue, _alpha);
 }
