@@ -17,21 +17,34 @@ FlashCards::~FlashCards(){
 void FlashCards::run(){
     while(s->isRunning()){//main loop
 
-        if(screen == HOME){
-
-            s->setColor(140, 255, 30);
-            s->bg();
-            displaySettingsButton();
-            s->setColor(150, 160, 170);
-            s->text(s->W()*0.5 - TTF_FontHeight(global)*1.1, 10, "Home", global);
-
+        switch(screen){
             
-        }else if(screen == SETTINGS){
-            s->bg(150);
-            s->text(s->W()*0.5 - TTF_FontHeight(global)*1.5, 10, "Settings", global);
-            displayReturnButton();
+            case HOME:
+                s->setColor(140, 255, 30);
+                s->bg();
+                displaySettingsButton();
+                displayCreateButton();
+                s->setColor(150, 160, 170);
+                s->text(s->W()*0.5 - TTF_FontHeight(global)*1.1, 10, "Home", global);
+                break;
+
+            case SETTINGS:
+                s->bg(150);
+                s->text(s->W()*0.5 - TTF_FontHeight(global)*1.5, 10, "Settings", global);
+                displayReturnButton();
+                break;
+
+            case CREATION:
+                s->setColor(30, 150, 255);
+                s->bg();
+                displayReturnButton();
+                s->text(s->W()*0.5 - TTF_FontHeight(global)*1.5, 10, "Creation Menu", global);
+                break;
+
+            default:
+                s->stopRunning();
+                break;
         }
-        
         
         while (SDL_PollEvent(&e)){ // reads all the events (mouse moving, key pressed...)        //possible to wait for an event with SDL_WaitEvent
             switch (e.type){
@@ -46,10 +59,27 @@ void FlashCards::run(){
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
-                if (screen == HOME && s->rollover(e.button.x, e.button.y, s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.07))
-                    screen = SETTINGS;
-                else if(screen == SETTINGS && s->rollover(e.button.x, e.button.y, s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.035))
-                    screen = HOME;
+                switch(screen){
+                    case HOME:
+                        if(s->rollover(e.button.x, e.button.y, s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.07))
+                            screen = SETTINGS;
+                        else if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.47, 120, 100))
+                            screen = CREATION;
+                        break;
+
+                    case SETTINGS:
+                        if(s->rollover(e.button.x, e.button.y, s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.035))
+                            screen = HOME;
+                        break;
+                    
+                    case CREATION:
+                        if(s->rollover(e.button.x, e.button.y, s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.035))
+                            screen = HOME;
+                        break;
+
+                    default:
+                        break;
+                }
                 break;
 
             case SDL_KEYDOWN: // SDL_KEYDOWN : hold a key            SDL_KEYUP : release a key
@@ -74,7 +104,7 @@ void FlashCards::run(){
                 break;
             }
         }
-        //s->displayPortions(70, 70);
+        s->displayPortions(70, 8);
         s->refreshAndDetails();
 
     }
@@ -97,8 +127,13 @@ void FlashCards::displaySettingsButton(){
 }
 
 void FlashCards::displayReturnButton(){
-    s->text(s->W()*0.02, s->H()*0.02, "return", small);
+    s->text(s->W()*0.02, s->H()*0.02, "return", small, 60, 60, 60);
     s->emptyRect(s->W()*0.01, s->H()*0.015, s->H()*0.09, s->H()*0.045, 5);
 }
 
-
+void FlashCards::displayCreateButton(){
+    s->emptyRect(s->W()*.01, s->H()*.47, 120, 100, 5, 60, 60, 60);
+    s->text(s->W()*.01 + 10, s->H()*.47, "Create", global, 60, 60, 60);
+    s->text(s->W()*.01 + 15, s->H()*.47 + 30, "a new", global, 60, 60, 60);
+    s->text(s->W()*.01, s->H()*.47 + 60, "package", global, 60, 60, 60);
+}

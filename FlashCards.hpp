@@ -3,6 +3,8 @@
 
 #define HOME 0
 #define SETTINGS (-1)
+#define CREATION 2
+#define TEST_CENTER 1
 
 
 #define PI (3.14159265)
@@ -30,6 +32,8 @@ class FlashCards{
         void displaySettingsButton();
 
         void displayReturnButton();
+
+        void displayCreateButton();
 
 
 
