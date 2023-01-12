@@ -68,3 +68,8 @@ bool Package::setQuestion(int index, const std::string question, const std::stri
     return true;
 }
 
+Question Package::get_lastQuestion() const{
+    if(questions->size() == 0)
+        throw new std::runtime_error("cannot get last question from an empty package\n");
+    return questions->get(questions->size() - 1);
+}

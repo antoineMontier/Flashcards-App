@@ -33,5 +33,7 @@ class Package{
         std::string getTitle() const;
 
         bool setQuestion(int index, const std::string question, const std::string answer, const std::string hint="");
+
+        Question get_lastQuestion() const;
 };
 #endif

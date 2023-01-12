@@ -282,7 +282,7 @@ bool FlashCards::readDocument(std::string filename){
     while (getline(myfile, line)) {
 
         if(!inPackage){//await for a package to be open
-            for(int i = 0 ; i < line.length() ; i++){
+            for(long unsigned int i = 0 ; i < line.length() ; i++){
                 if(line[i] == '<' && i + 4 <line.length())
                     if(line[i+1] == 'p' && line[i+2] == '='){
                         if(line[i+3] == ' ')
@@ -304,8 +304,7 @@ bool FlashCards::readDocument(std::string filename){
 
         if(inPackage){
 
-            
-            for(int i = 0 ; i < line.length() ; i++){
+            for(long unsigned int i = 0 ; i < line.length() ; i++){
 
                 if(line[i] == '<' && i + 3 < line.length() && line[i+1] == '/' && line[i+2] == 'p' && line[i+3] == '>'){//await for the package to be closed
                     if(inQuestionGrp)
@@ -319,23 +318,42 @@ bool FlashCards::readDocument(std::string filename){
                 }else if(inQuestionGrp && line[i] == '<' && i + 3 < line.length() && line[i+1] == '/' && line[i+2] == 'Q' && line[i+3] == '>'){//await for a question to be closed
                     if(inAnswer || inHint || inQuestion)
                         throw new std::runtime_error("Close questions fields before closing the question itself\n");
+                    else if(packages->get(packages->size() - 1).get_lastQuestion().question == "" || packages->get(packages->size() - 1).get_lastQuestion().answer == "")
+                        throw new std::runtime_error("cannot close a question if both the question and answer fields are empty\n");
                     else
                         inQuestionGrp = false;
+                }else if(inQuestionGrp && line[i] == '<' && i + 2 < line.length() && line[i + 1] == 'q' && line[i + 2] == '>'){//await for a question_field to be read
+                    if(inAnswer || inHint || inQuestion)
+                        throw new std::runtime_error("Close questions fields before giving the question field\n");
+                    inQuestion = true;
+                }else if(inQuestionGrp && line[i] == '<' && i + 2 < line.length() && line[i + 1] == 'h' && line[i + 2] == '>'){//await for a hint to be read
+                    if(inAnswer || inHint || inQuestion)
+                        throw new std::runtime_error("Close questions fields before giving the hint field\n");
+                    inHint = true;
+                }else if(inQuestionGrp && line[i] == '<' && i + 2 < line.length() && line[i + 1] == 'a' && line[i + 2] == '>'){//await for an answer to be read
+                    if(inAnswer || inHint || inQuestion)
+                        throw new std::runtime_error("Close questions fields before giving the answer field\n");
+                    inAnswer = true;
+                }else if(inQuestionGrp && line[i] == '<' && i + 3 < line.length() && line[i + 1] == '/' && line[i + 2] == 'q' && line[i+3] == '>'){//await for a question_field to be closed
+                    inQuestion = false;
+                }else if(inQuestionGrp && line[i] == '<' && i + 3 < line.length() && line[i + 1] == '/' && line[i + 2] == 'a' && line[i+3] == '>'){//await for an answer to be closed
+                    inAnswer = false;
+                }else if(inQuestionGrp && line[i] == '<' && i + 3 < line.length() && line[i + 1] == '/' && line[i + 2] == 'h' && line[i+3] == '>'){//await for a hint to be closed
+                    inHint = false;
                 }
 
-                //await for a question_field to be read
-                //await for a hint to be read
-                //await for an answer to be read
+                //============add text
 
-
-            
-
-
-
-
+                if(inQuestionGrp){
+                    if(inQuestion)
+                        packages->get(packages->size() - 1).get_lastQuestion().question += line[i];
+                    else if(inHint)
+                        packages->get(packages->size() - 1).get_lastQuestion().hint += line[i];
+                    else if(inAnswer)
+                        packages->get(packages->size() - 1).get_lastQuestion().answer += line[i];
+                }
+            }
         }
-
-
     }   
     myfile.close();
     return true;
