@@ -35,5 +35,7 @@ class Package{
         bool setQuestion(int index, const std::string question, const std::string answer, const std::string hint="");
 
         Question get_lastQuestion() const;
+
+        void printPackage()const;
 };
 #endif

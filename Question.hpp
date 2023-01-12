@@ -19,6 +19,8 @@ class Question{
         bool hintIsPresent();
 
         void resetQuestion();
+
+        void printQuestion()const;
 };
 
 

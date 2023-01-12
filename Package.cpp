@@ -73,3 +73,10 @@ Question Package::get_lastQuestion() const{
         throw new std::runtime_error("cannot get last question from an empty package\n");
     return questions->get(questions->size() - 1);
 }
+
+void Package::printPackage()const{
+    std::cout << "===== " << package_name << " =====\n";
+    for(int i=0; i<questions->size(); i++)
+        questions->get(i).printQuestion();
+    std::cout << "====================================\n";
+}

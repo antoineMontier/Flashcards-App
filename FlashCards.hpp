@@ -60,7 +60,7 @@ class FlashCards{
         const char*buffer;
         int tmp_h, tmp_w;
 
-        LinkedList<Package> *packages;
+        LinkedList<Package*> *packages;
 
     public:
 
@@ -84,6 +84,7 @@ class FlashCards{
 
         bool readDocument(std::string filename);//idea : read the total lines numer of the document and then show a progression bar depending on how much lines have been read
 
+        void printPackages()const;
 };
 
 

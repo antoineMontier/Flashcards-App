@@ -20,7 +20,7 @@ FlashCards::FlashCards(){
     buffers_limits[0] = 0;
     buffers_limits[1] = 0;
     buffers_limits[2] = 0;
-    packages = new LinkedList<Package>();
+    packages = new LinkedList<Package*>();
 }
 
 FlashCards::~FlashCards(){
@@ -34,6 +34,8 @@ FlashCards::~FlashCards(){
 }
 
 void FlashCards::run(){
+    Package *p = new Package();
+    packages->push(p);
     while(s->isRunning()){//main loop
         switch(screen){
             
@@ -152,10 +154,13 @@ void FlashCards::run(){
                 break;
             }
         }
-        s->displayPortions(25, 8);
+        //s->displayPortions(25, 8);
         s->refreshAndDetails();
 
     }
+    //display the packages in memory 
+    printPackages();
+
 }
 
 
@@ -268,6 +273,11 @@ s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
 */
 
 bool FlashCards::readDocument(std::string filename){
+    std::string buff1 = ""; 
+    std::string buff2 = "";
+    std::string buff3 = "";
+    int reading_step = 0;
+    std::cout << "step = " << reading_step++ << std::endl;
     std::string line; 
     std::ifstream myfile(filename);
 
@@ -279,82 +289,148 @@ bool FlashCards::readDocument(std::string filename){
 
     if(!myfile.is_open())
         return false;
+    std::cout << "step = a " << reading_step++ << std::endl;
     while (getline(myfile, line)) {
-
+        printPackages();
+        std::cout << "step = " << reading_step++ << std::endl;
         if(!inPackage){//await for a package to be open
             for(long unsigned int i = 0 ; i < line.length() ; i++){
+                std::cout << "step = b " << reading_step++ << std::endl;
                 if(line[i] == '<' && i + 4 <line.length())
                     if(line[i+1] == 'p' && line[i+2] == '='){
-                        if(line[i+3] == ' ')
-                            throw new std::runtime_error("package name must be not null\nUse <p=<package-name>>");
+                        if(line[i+3] == ' '){
+                            std::cout << "package name must be not null\nUse <p=<package-name>>" <<std::endl;
+                            throw std::runtime_error("package name must be not null\nUse <p=<package-name>>");
+                            }
                         else{
+                            std::cout << "step = c " << reading_step++ << std::endl;
                             std::string title = "";
                             i+=3;
                             while(line[i] != '>'){
                                 title += line[i++];
                             }
-                            Package p(title);
+                            std::cout << "step = d " << reading_step++ << std::endl;//5
+                            Package *p = new Package(title);
+                            p->printPackage();
+                            std::cout << "step = e " << reading_step++ << std::endl;//6
                             packages->pushTail(p);
+                            std::cout << "step = f " << reading_step++ << std::endl;//7
                             inPackage = true;
+                            std::cout << "step = g " << reading_step++ << std::endl;//8
                             i = line.length();//stop the for loop
+                            std::cout << "step = h " << reading_step++ << std::endl;//9
                         }
                     }
             }
         }
-
+        std::cout << "step = i " << reading_step++ << std::endl;
         if(inPackage){
-
+            std::cout << "step = j " << reading_step++ << std::endl;
             for(long unsigned int i = 0 ; i < line.length() ; i++){
-
+                std::cout << "step = A " << reading_step++ << std::endl;
                 if(line[i] == '<' && i + 3 < line.length() && line[i+1] == '/' && line[i+2] == 'p' && line[i+3] == '>'){//await for the package to be closed
-                    if(inQuestionGrp)
-                        throw new std::runtime_error("package is close before question ended\n");
-                    else{
+                    if(inQuestionGrp){
+                        std::cout << "package is close before question ended\n" <<std::endl;
+                        throw std::runtime_error("package is close before question ended\n");
+                    }else{
                         inPackage = false;
                         i = line.length();//stop the loop
                     }
+                    std::cout << "step = B " << reading_step++ << std::endl;
                 }else if(!inQuestionGrp && line[i] == '<' && i + 2 < line.length() && line[i+1] == 'Q' && line[i+2] == '>'){//await for a question to be opened
+                    std::cout << "step = # " << reading_step++ << std::endl;
                     inQuestionGrp = true;
                 }else if(inQuestionGrp && line[i] == '<' && i + 3 < line.length() && line[i+1] == '/' && line[i+2] == 'Q' && line[i+3] == '>'){//await for a question to be closed
-                    if(inAnswer || inHint || inQuestion)
-                        throw new std::runtime_error("Close questions fields before closing the question itself\n");
-                    else if(packages->get(packages->size() - 1).get_lastQuestion().question == "" || packages->get(packages->size() - 1).get_lastQuestion().answer == "")
-                        throw new std::runtime_error("cannot close a question if both the question and answer fields are empty\n");
-                    else
+                    std::cout << "step = @ " << reading_step++ << std::endl;
+                    if(inAnswer || inHint || inQuestion){
+                        std::cout << "step = 01 " << reading_step++ << std::endl;
+                        std::cout << "Close questions fields before closing the question itself\n" <<std::endl;
+                        return false;
+                        //throw std::runtime_error("Close questions fields before closing the question itself\n");
+                    }else if(packages->get(packages->size() - 1)->question_count() !=0 && (packages->get(packages->size() - 1)->get_lastQuestion().question == "" || packages->get(packages->size() - 1)->get_lastQuestion().answer == "")){
+                        std::cout << "step = 02 " << reading_step++ << std::endl;
+                        std::cout << "cannot close a question if both the question and answer fields are empty\n" <<std::endl;
+                        return false;
+                        //throw std::runtime_error("cannot close a question if both the question and answer fields are empty\n");
+                    }else{
+                        std::cout << "step = 03 " << reading_step++ << std::endl;
+                        std::cout << "step = C " << reading_step++ << std::endl;
+                        if(packages->get(packages->size() - 1)->question_count() !=0){
+                            std::cout << "\n\n\n\n\n";
+                            packages->get(packages->size() - 1)->get_lastQuestion().question = buff1;
+                            packages->get(packages->size() - 1)->get_lastQuestion().hint = buff2;
+                            packages->get(packages->size() - 1)->get_lastQuestion().answer = buff3;
+                        }
+                        std::cout << "step = D " << reading_step++ << std::endl;
+                        buff1 = buff2 = buff3 = "";
                         inQuestionGrp = false;
+                        std::cout << "step = E " << reading_step++ << std::endl;
+                    }
                 }else if(inQuestionGrp && line[i] == '<' && i + 2 < line.length() && line[i + 1] == 'q' && line[i + 2] == '>'){//await for a question_field to be read
-                    if(inAnswer || inHint || inQuestion)
-                        throw new std::runtime_error("Close questions fields before giving the question field\n");
+                    std::cout << "step = ° " << reading_step++ << std::endl;
+                    if(inAnswer || inHint || inQuestion){
+                        std::cout << "Close questions fields before giving the question field\n" <<std::endl;
+                        throw std::runtime_error("Close questions fields before giving the question field\n");
+                        }
                     inQuestion = true;
                 }else if(inQuestionGrp && line[i] == '<' && i + 2 < line.length() && line[i + 1] == 'h' && line[i + 2] == '>'){//await for a hint to be read
-                    if(inAnswer || inHint || inQuestion)
-                        throw new std::runtime_error("Close questions fields before giving the hint field\n");
+                    std::cout << "step = à " << reading_step++ << std::endl;
+                    if(inAnswer || inHint || inQuestion){
+                        std::cout << "Close questions fields before giving the hint field\n" <<std::endl;
+                        throw std::runtime_error("Close questions fields before giving the hint field\n");
+                        }
                     inHint = true;
                 }else if(inQuestionGrp && line[i] == '<' && i + 2 < line.length() && line[i + 1] == 'a' && line[i + 2] == '>'){//await for an answer to be read
-                    if(inAnswer || inHint || inQuestion)
-                        throw new std::runtime_error("Close questions fields before giving the answer field\n");
+                    std::cout << "step = ç " << reading_step++ << std::endl;
+                    if(inAnswer || inHint || inQuestion){
+                        std::cout << "Close questions fields before giving the answer field\n" <<std::endl;
+                        throw std::runtime_error("Close questions fields before giving the answer field\n");
+                        }
                     inAnswer = true;
                 }else if(inQuestionGrp && line[i] == '<' && i + 3 < line.length() && line[i + 1] == '/' && line[i + 2] == 'q' && line[i+3] == '>'){//await for a question_field to be closed
+                    std::cout << "step = ' " << reading_step++ << std::endl;
                     inQuestion = false;
                 }else if(inQuestionGrp && line[i] == '<' && i + 3 < line.length() && line[i + 1] == '/' && line[i + 2] == 'a' && line[i+3] == '>'){//await for an answer to be closed
+                    std::cout << "step = ~ " << reading_step++ << std::endl;
                     inAnswer = false;
                 }else if(inQuestionGrp && line[i] == '<' && i + 3 < line.length() && line[i + 1] == '/' && line[i + 2] == 'h' && line[i+3] == '>'){//await for a hint to be closed
+                    std::cout << "step = [ " << reading_step++ << std::endl;
                     inHint = false;
                 }
+                std::cout << "step = k " << reading_step++ << std::endl;
 
                 //============add text
 
                 if(inQuestionGrp){
-                    if(inQuestion)
-                        packages->get(packages->size() - 1).get_lastQuestion().question += line[i];
-                    else if(inHint)
-                        packages->get(packages->size() - 1).get_lastQuestion().hint += line[i];
-                    else if(inAnswer)
-                        packages->get(packages->size() - 1).get_lastQuestion().answer += line[i];
+                    std::cout << "step = l " << reading_step++ << std::endl;
+                    if(inQuestion){
+                        std::cout << "step = m " << reading_step++ << std::endl;
+                        buff1 += line[i];
+                        //packages->get(packages->size() - 1)->get_lastQuestion().question += line[i];
+                    }else if(inHint){
+                        std::cout << "step = n " << reading_step++ << std::endl;
+                        buff2 += line[i];
+                        //packages->get(packages->size() - 1)->get_lastQuestion().hint += line[i];
+                    }else if(inAnswer){
+                        std::cout << "step = o " << reading_step++ << std::endl;
+                        buff3 += line[i];
+                        //packages->get(packages->size() - 1)->get_lastQuestion().answer += line[i];
+                        }
                 }
+                std::cout << "step = p " << reading_step++ << std::endl;
             }
+            std::cout << "step = q " << reading_step++ << std::endl;
         }
+        std::cout << "step = r " << reading_step++ << std::endl;
     }   
+    std::cout << "step = s " << reading_step++ << std::endl;
     myfile.close();
+    std::cout << "step = t " << reading_step++ << std::endl;
     return true;
+}
+
+
+void FlashCards::printPackages()const{
+    for(int i=0; i< packages->size(); i++)
+        packages->get(i)->printPackage();
 }

@@ -20,3 +20,7 @@ void Question::resetQuestion(){
     question = "";
     hint = "";
 }
+
+void Question::printQuestion()const{
+    std::cout << question << " ? H: " << hint << "  A: " << answer << std::endl;
+}
