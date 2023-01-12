@@ -9,7 +9,7 @@ it's using files with a .flash extension;
                         for each question there is an answer
                         for each question there is an optionnal hint
                      
-  the beginning of a package is <p><package-name>
+  the beginning of a package is "<p>"<package-name>
   the end of a package is <\p>
   
   the beginning of question is <Q>
@@ -17,4 +17,4 @@ it's using files with a .flash extension;
   
   the question field starts and ends with <q> </q>
   the hint field starts and ends with <h> </h>
-  the answer field starts and ends with <a> </a>
+  the answer field starts and ends with "<a>" </a>
