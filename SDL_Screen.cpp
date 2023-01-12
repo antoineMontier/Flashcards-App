@@ -738,6 +738,8 @@ bool SDL_Screen::setFont(TTF_Font **font, const char* font_file, int size)
 
 bool SDL_Screen::text(int x, int y, const char * text, TTF_Font *font){
 
+    if(text[0] == '\0')
+        return false;
     int text_width;
     int text_height;
     SDL_Surface *surface;
@@ -760,6 +762,9 @@ bool SDL_Screen::text(int x, int y, const char * text, TTF_Font *font){
 }
 
 bool SDL_Screen::text(int x, int y, const char *text, TTF_Font *font, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha){
+
+    if(text[0] == '\0')
+        return false;
     int text_width;
     int text_height;
     SDL_Surface *surface;
@@ -781,9 +786,34 @@ bool SDL_Screen::text(int x, int y, const char *text, TTF_Font *font, unsigned c
     return true;
 }
 
+/*
+bool SDL_Screen::text(int x, int y, std::string text, TTF_Font *font, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha){
+    int text_width;
+    int text_height;
+    SDL_Surface *surface;
+    SDL_Texture *texture;
+    SDL_Color textColor = {red, green, blue, alpha};
+
+    surface = TTF_RenderUTF8_Blended(font, text, textColor);
+    texture = SDL_CreateTextureFromSurface(r, surface);
+    text_width = surface->w;
+    text_height = surface->h;
+    SDL_FreeSurface(surface);
+    SDL_Rect rectangle;
+    rectangle.x = x;
+    rectangle.y = y;
+    rectangle.w = text_width;
+    rectangle.h = text_height;
+    SDL_RenderCopy(r, texture, NULL, &rectangle);
+    SDL_DestroyTexture(texture);
+    return true;
+}*/
+
 void SDL_Screen::paragraph(int x, int y, const char* text, TTF_Font* font, 
                         unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha){
 
+    if(text[0] == '\0')
+        return;
     SDL_Color text_color = {red, green, blue, alpha};
     // Split the text by newline characters
     std::stringstream textStream(text);
@@ -810,6 +840,8 @@ void SDL_Screen::paragraph(int x, int y, const char* text, TTF_Font* font,
 
 void SDL_Screen::paragraph(int x, int y, const char* text, TTF_Font* font){
 
+    if(text[0] == '\0')
+        return;
     SDL_Color text_color = {_red, _green, _blue, _alpha};
     // Split the text by newline characters
     std::stringstream textStream(text);
@@ -840,5 +872,20 @@ void SDL_Screen::displayPortions(int cut_x, int cut_y, unsigned char red, unsign
         SDL_RenderDrawLine(r, i * (double)(_width - 1)/cut_x,  0, i*(double)(_width - 1)/cut_x, _height);//vertical lines
     for(int i = 0; i <= cut_y; i++)
         SDL_RenderDrawLine(r, 0, i * (double)(_height - 1)/cut_y,  (_width), i*(double)(_height - 1)/cut_y);//horizontal lines
+    SDL_SetRenderDrawColor(r, 255-red, 255-green, 255-blue, 255);
+    SDL_RenderDrawLine(r, 0, _height/2, _width, _height/2);//middle lines
+    SDL_RenderDrawLine(r, _width/2, 0, _width/2, _height);
     SDL_SetRenderDrawColor(r, _red, _green, _blue, _alpha);
+}
+
+std::string SDL_Screen::add_ENTER_every(int n, std::string str){
+    std::string result = "";
+    for(long unsigned int i=0; i < str.length(); i++){
+        if(i!= 0 && i % n == 0){
+            result += '\n';
+            result += str[i];
+        }else 
+            result += str[i];
+    }
+    return result;
 }

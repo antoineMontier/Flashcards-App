@@ -24,6 +24,13 @@ class FlashCards{
         SDL_Color background;
         SDL_Color buttonColor;
         SDL_Color buttonFontColor;
+        bool typingAllowed;
+        int typingNow;
+        int buffer_id;
+        std::string buffers[3];
+        int lines[3];
+        const char*buffer;
+        int tmp_h, tmp_w;
 
     public:
 
@@ -44,8 +51,6 @@ class FlashCards{
         void homeScreen();
 
         void creationScreen();
-
-
 
 };
 
