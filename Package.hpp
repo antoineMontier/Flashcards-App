@@ -3,13 +3,12 @@
 
 #include "Question.hpp"
 #include <fstream>
-#include "LinkedList.hpp"
+#include "LinkedList.cpp"
 
 class Package{
 
     private :
         std::string package_name;
-        int nb_questions;
 
         LinkedList<Question>* questions;
 
@@ -23,8 +22,16 @@ class Package{
         bool add_question(Question q);
         bool add_question(std::string question, std::string answer, std::string hint="");
 
-        Question get_question(int index);
+        Question get_question(int index) const;
 
         bool remove_question(int index);
+
+        int question_count() const;
+
+        bool setTitle(const std::string title);
+
+        std::string getTitle() const;
+
+        bool setQuestion(int index, const std::string question, const std::string answer, const std::string hint="");
 };
 #endif

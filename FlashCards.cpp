@@ -20,6 +20,7 @@ FlashCards::FlashCards(){
     buffers_limits[0] = 0;
     buffers_limits[1] = 0;
     buffers_limits[2] = 0;
+    packages = new LinkedList<Package>();
 }
 
 FlashCards::~FlashCards(){
@@ -28,6 +29,8 @@ FlashCards::~FlashCards(){
     TTF_CloseFont(medium);
     delete(s);
     s = nullptr;
+    delete(packages);
+    packages = nullptr;
 }
 
 void FlashCards::run(){
@@ -267,11 +270,73 @@ s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
 bool FlashCards::readDocument(std::string filename){
     std::string line; 
     std::ifstream myfile(filename);
+
+    bool inPackage = false;
+    bool inQuestionGrp = false;
+    bool inQuestion = false;
+    bool inHint = false;
+    bool inAnswer = false;
+
     if(!myfile.is_open())
         return false;
     while (getline(myfile, line)) {
-        // Do something with the line
-    }
+
+        if(!inPackage){//await for a package to be open
+            for(int i = 0 ; i < line.length() ; i++){
+                if(line[i] == '<' && i + 4 <line.length())
+                    if(line[i+1] == 'p' && line[i+2] == '='){
+                        if(line[i+3] == ' ')
+                            throw new std::runtime_error("package name must be not null\nUse <p=<package-name>>");
+                        else{
+                            std::string title = "";
+                            i+=3;
+                            while(line[i] != '>'){
+                                title += line[i++];
+                            }
+                            Package p(title);
+                            packages->pushTail(p);
+                            inPackage = true;
+                            i = line.length();//stop the for loop
+                        }
+                    }
+            }
+        }
+
+        if(inPackage){
+
+            
+            for(int i = 0 ; i < line.length() ; i++){
+
+                if(line[i] == '<' && i + 3 < line.length() && line[i+1] == '/' && line[i+2] == 'p' && line[i+3] == '>'){//await for the package to be closed
+                    if(inQuestionGrp)
+                        throw new std::runtime_error("package is close before question ended\n");
+                    else{
+                        inPackage = false;
+                        i = line.length();//stop the loop
+                    }
+                }else if(!inQuestionGrp && line[i] == '<' && i + 2 < line.length() && line[i+1] == 'Q' && line[i+2] == '>'){//await for a question to be opened
+                    inQuestionGrp = true;
+                }else if(inQuestionGrp && line[i] == '<' && i + 3 < line.length() && line[i+1] == '/' && line[i+2] == 'Q' && line[i+3] == '>'){//await for a question to be closed
+                    if(inAnswer || inHint || inQuestion)
+                        throw new std::runtime_error("Close questions fields before closing the question itself\n");
+                    else
+                        inQuestionGrp = false;
+                }
+
+                //await for a question_field to be read
+                //await for a hint to be read
+                //await for an answer to be read
+
+
+            
+
+
+
+
+        }
+
+
+    }   
     myfile.close();
     return true;
 }

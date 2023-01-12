@@ -35,6 +35,7 @@ it's using files with a .flash extension;
 
 #include <fstream>
 #include "SDL_Screen.hpp"
+#include "Package.hpp"
 
 class FlashCards{
 
@@ -59,6 +60,8 @@ class FlashCards{
         const char*buffer;
         int tmp_h, tmp_w;
 
+        LinkedList<Package> *packages;
+
     public:
 
         FlashCards();
@@ -79,7 +82,7 @@ class FlashCards{
 
         void creationScreen();
 
-        bool readDocument(std::string filename);
+        bool readDocument(std::string filename);//idea : read the total lines numer of the document and then show a progression bar depending on how much lines have been read
 
 };
 
