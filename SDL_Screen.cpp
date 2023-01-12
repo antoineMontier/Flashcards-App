@@ -567,21 +567,41 @@ void SDL_Screen::filledRect(int x, int y, int width, int height, int rounding, u
     SDL_SetRenderDrawColor(r, red, green, blue, alpha);
     //first let's fix the rounding if it's bellow 0 or greater than the half of the smallest side of the rectangle
     if(rounding <= 0){
-        filledRect(x, y, width, height);
+        emptyRect(x, y, width, height);
         return;
     }
     if(rounding > fmin(width, height)/2.0)
         rounding = fmin(width, height)/2.0;
-    //let's draw the core rectangles
+    //draw the center
     filledRect(x, y + rounding, width + 1, height-2*rounding);
-    filledRect(x + rounding, y, width-2*rounding, height + 1);
+    filledRect(x + rounding, y, width - 2*rounding, rounding);
+    filledRect(x + rounding, y + height - rounding, width - 2*rounding, rounding);
 
-    //draw the 4 corners
+    //now draw the four corners
 
-    filledCircle(x +  rounding, y + rounding, rounding);//top left
-    filledCircle(x + width - rounding, y + rounding, rounding);//top right
-    filledCircle(x + rounding, y + height - rounding, rounding);//bottom left
-    filledCircle(x + width - rounding, y + height - rounding, rounding);//bottom right
+    //==== top left ====
+    for(int i = x ; i < x + rounding; i++)
+        for(int j = y; j < y + rounding; j++)
+            if(distance(x + rounding, y + rounding, i, j) <= rounding)
+                SDL_RenderDrawPoint(r, i, j);
+    
+    //==== top right ====
+    for(int i = x + width - rounding; i < x + width ; i++)
+        for(int j = y ; j < y + rounding ; j++)
+            if(distance(x + width - rounding, y + rounding, i, j) <= rounding) 
+                SDL_RenderDrawPoint(r, i, j);
+
+    //==== bottom left ====
+    for(int i = x ; i < x + rounding; i++)
+        for(int j = y + height - rounding ; j < y + height ; j++)
+            if(distance(x + rounding, y + height - rounding, i, j) <= rounding) 
+                SDL_RenderDrawPoint(r, i, j);
+
+    //==== bottom right ====
+    for(int i = x + width - rounding  ; i < x + width  ; i++)
+        for(int j = y + height - rounding  ; j < y + height  ; j++)
+            if(distance(x + width - rounding, y + height - rounding, i, j) <= rounding)
+                SDL_RenderDrawPoint(r, i, j);
     SDL_SetRenderDrawColor(r, _red, _green, _blue, _alpha);
 }
 

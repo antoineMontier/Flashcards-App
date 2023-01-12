@@ -79,7 +79,6 @@ void FlashCards::run(){
                     case HOME:
                         if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.01, s->H()*.07, s->H()*.07)){
                             buffer_id = 1;
-                            typingAllowed = true;
                             buffers[buffer_id] = "";
                             buffers_limits[buffer_id] = file_max_lenght;
                             screen = SETTINGS;
@@ -101,7 +100,10 @@ void FlashCards::run(){
                         }else if(s->rollover(e.button.x, e.button.y, s->W()*0.5 - TTF_FontHeight(global)*1 + tmp_w, s->H()*.45, 60, 30)){
                             readDocument(buffers[buffer_id] + ".flash");
                             buffers[buffer_id] = "";
-                        }
+                        }else if(s->rollover(e.button.x, e.button.y, s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45, tmp_w + 2 + 2.5/(buffers[1].length() + 0.2), tmp_h))
+                            typingAllowed = true;
+                        else
+                            typingAllowed = false;
                         break;
                     
                     case CREATION:
@@ -210,25 +212,31 @@ void FlashCards::settingsScreen(){
     s->text(s->W()*0.5 - TTF_FontHeight(global)*1.9, s->H()*0.33, "Load a file", global, title.r, title.g, title.b, title.a);
     
     // display text input + extension
-    s->text(s->W()*0.5 - TTF_FontHeight(global)*3.4, s->H()*0.45,
+    s->text(s->W()*0.5 - TTF_FontHeight(global)*3.4 + 2.5/(buffers[1].length() + 0.2), s->H()*0.45,
                 (buffers[1].substr(0, 14) + ".flash").c_str(), global,
                 title.r, title.g, title.b, title.a);
     // box
     TTF_SizeText(global, (buffers[1].substr(0, 14)).c_str(), &tmp_w, &tmp_h);
     if((int)(buffers[1].length()) <= file_max_lenght)
         s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
-                    tmp_w + 2, tmp_h,// w , h
+                    tmp_w + 2 + 2.5/(buffers[1].length() + 0.2), tmp_h,// w , h
                     10, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
     else// red coloration if the text input is at it's max size
         s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
-                        tmp_w + 2, tmp_h,// w , h
+                        tmp_w + 2 + 2.5/(buffers[1].length() + 0.2), tmp_h,// w , h
                         10, buttonColor.r, buttonColor.g/2, buttonColor.b/2, buttonColor.a);
+    
+    //darken background if text focus is on the text input window
+    if(typingAllowed)
+        s->filledRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
+                        tmp_w + 2 + 2.5/(buffers[1].length() + 0.2), tmp_h,// w , h
+                        10, 0, 0, 0, 50);//round red green blue alpha
 
     //add a load button to validate
     s->filledRect(s->W()*0.5 - TTF_FontHeight(global)*1 + tmp_w, s->H()*.45,
                     60, 30, 6, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
     //"Load" is displayed on the button
-    s->text(s->W()*0.5 - TTF_FontHeight(global)*1 + tmp_w + 4, s->H()*.45 + 2,
+    s->text(s->W()*0.5 - TTF_FontHeight(global) + tmp_w + 6, s->H()*.45 + 2,
             "Load", medium, background.r, background.g, background.b);
 }
 
