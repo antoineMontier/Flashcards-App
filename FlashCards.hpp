@@ -9,6 +9,7 @@
 
 #define PI (3.14159265)
 
+#include <fstream>
 #include "SDL_Screen.hpp"
 
 class FlashCards{
@@ -19,6 +20,7 @@ class FlashCards{
         SDL_Event e;
         TTF_Font *global;
         TTF_Font *small;
+        TTF_Font *medium;
         int screen;
         SDL_Color title;
         SDL_Color background;
@@ -28,7 +30,8 @@ class FlashCards{
         int typingNow;
         int buffer_id;
         std::string buffers[3];
-        int lines[3];
+        int buffers_limits[3];
+        const int file_max_lenght = 13;
         const char*buffer;
         int tmp_h, tmp_w;
 
@@ -51,6 +54,8 @@ class FlashCards{
         void homeScreen();
 
         void creationScreen();
+
+        bool readDocument(std::string filename);
 
 };
 

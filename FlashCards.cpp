@@ -7,6 +7,7 @@ FlashCards::FlashCards(){
     s = new SDL_Screen(1080, 720, "FlashCards", 60);
     s->setFont(&global, "Roboto_m.ttf", 30);
     s->setFont(&small, "Roboto_m.ttf", 18);
+    s->setFont(&medium, "Roboto_m.ttf", 22);
     title = {60, 60, 60, 255};
     background = {150, 150, 230, 255};
     buttonColor = {100, 100, 100, 255};
@@ -16,13 +17,15 @@ FlashCards::FlashCards(){
     buffers[0] = "";
     buffers[1] = "";
     buffers[2] = "";
-    lines[0] = 0;
-    lines[1] = 0;
-    lines[2] = 0;
+    buffers_limits[0] = 0;
+    buffers_limits[1] = 0;
+    buffers_limits[2] = 0;
 }
 
 FlashCards::~FlashCards(){
     TTF_CloseFont(global);
+    TTF_CloseFont(small);
+    TTF_CloseFont(medium);
     delete(s);
     s = nullptr;
 }
@@ -52,7 +55,7 @@ void FlashCards::run(){
             switch (e.type){
 
             case SDL_TEXTINPUT:
-                if(typingAllowed)
+                if(typingAllowed && (int)(buffers[buffer_id].length()) <= buffers_limits[buffer_id])
                     buffers[buffer_id] += e.text.text;
                 break;
 
@@ -69,25 +72,38 @@ void FlashCards::run(){
             case SDL_MOUSEBUTTONDOWN:
                 switch(screen){
                     case HOME:
-                        if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.01, s->H()*.07, s->H()*.07))
-                            screen = SETTINGS;
-                        else if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.47, 120, 100)){
+                        if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.01, s->H()*.07, s->H()*.07)){
                             buffer_id = 1;
                             typingAllowed = true;
+                            buffers[buffer_id] = "";
+                            buffers_limits[buffer_id] = file_max_lenght;
+                            screen = SETTINGS;
+                        }else if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.47, 120, 100)){
+                            buffer_id = 1;
+                            typingAllowed = true;
+                            buffers[buffer_id] = "";
+                            buffers_limits[buffer_id] = file_max_lenght;
                             screen = CREATION;
                         }
                         break;
 
                     case SETTINGS:
-                        if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.01, s->H()*.07, s->H()*.035))
+                        if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.01, s->H()*.07, s->H()*.035)){
+                            typingAllowed = false;
+                            typingNow = false;
+                            buffers[buffer_id = 0] = "";//clean buffer
                             screen = HOME;
+                        }else if(s->rollover(e.button.x, e.button.y, s->W()*0.5 - TTF_FontHeight(global)*1 + tmp_w, s->H()*.45, 60, 30)){
+                            readDocument(buffers[buffer_id] + ".flash");
+                            buffers[buffer_id] = "";
+                        }
                         break;
                     
                     case CREATION:
                         if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.01, s->H()*.07, s->H()*.035)){
                             typingAllowed = false;
                             typingNow = false;
-                            buffers[buffer_id = 1] = "";//clean buffer
+                            buffers[buffer_id = 0] = "";//clean buffer
                             screen = HOME;
                         }
                         break;
@@ -182,7 +198,31 @@ void FlashCards::settingsScreen(){
     s->bg();
     s->setColor(buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
     displayReturnButton();
+    // display instructions
     s->text(s->W()*0.5 - TTF_FontHeight(global)*1.5, 10, "Settings", global, title.r, title.g, title.b, title.a);
+    s->text(s->W()*0.5 - TTF_FontHeight(global)*1.9, s->H()*0.33, "Load a file", global, title.r, title.g, title.b, title.a);
+    
+    // display text input + extension
+    s->text(s->W()*0.5 - TTF_FontHeight(global)*3.4, s->H()*0.45,
+                (buffers[1].substr(0, 14) + ".flash").c_str(), global,
+                title.r, title.g, title.b, title.a);
+    // box
+    TTF_SizeText(global, (buffers[1].substr(0, 14)).c_str(), &tmp_w, &tmp_h);
+    if((int)(buffers[1].length()) <= file_max_lenght)
+        s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
+                    tmp_w + 2, tmp_h,// w , h
+                    10, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
+    else// red coloration if the text input is at it's max size
+        s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
+                        tmp_w + 2, tmp_h,// w , h
+                        10, buttonColor.r, buttonColor.g/2, buttonColor.b/2, buttonColor.a);
+
+    //add a load button to validate
+    s->filledRect(s->W()*0.5 - TTF_FontHeight(global)*1 + tmp_w, s->H()*.45,
+                    60, 30, 6, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
+    //"Load" is displayed on the button
+    s->text(s->W()*0.5 - TTF_FontHeight(global)*1 + tmp_w + 4, s->H()*.45 + 2,
+            "Load", medium, background.r, background.g, background.b);
 }
 
 void FlashCards::creationScreen(){
@@ -191,17 +231,47 @@ void FlashCards::creationScreen(){
     s->setColor(buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
     displayReturnButton();
 
+    //texts for instructions
     s->text(s->W()*0.5 - TTF_FontHeight(global)*2.6, 10, "Creation Menu", global, title.r, title.g, title.b, title.a);
     s->text(s->W()*0.5 - TTF_FontHeight(global)*4, s->H()*0.33, "Enter package name :", global, title.r, title.g, title.b, title.a);
 
-    buffer = buffers[1].c_str();
-    s->paragraph(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,
-                s->add_ENTER_every(14, buffers[1]).c_str(), global,
+    //display input
+    s->text(s->W()*0.5 - TTF_FontHeight(global)*3.9, s->H()*0.45,
+                buffers[1].substr(0, 14).c_str(), global,
                 title.r, title.g, title.b, title.a);
     
     //add a box over the input :
-    //TTF_SizeText(global, s->add_ENTER_every(14, buffers[1]).c_str(), &tmp_w, &tmp_h);
-    s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
-                TTF_FontHeight(global)*7, TTF_FontHeight(global)*(1+(buffers[1].length())/14 -1/14),// w , h
-                10);
+    TTF_SizeText(global, (buffers[1].substr(0, 14)).c_str(), &tmp_w, &tmp_h);
+    if((int)(buffers[1].length()) <= file_max_lenght)
+        s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*4, s->H()*0.45,// x , y
+                    tmp_w + 2, tmp_h,// w , h
+                    10, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
+    else// red coloration if the text input is at it's max size
+        s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*4, s->H()*0.45,// x , y
+                        tmp_w + 2, tmp_h,// w , h
+                        10, buttonColor.r, buttonColor.g/2, buttonColor.b/2, buttonColor.a);
+}
+
+/*
+s->paragraph(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,
+            s->add_ENTER_every(14, buffers[1]).c_str(), global,
+            title.r, title.g, title.b, title.a);
+
+//add a box over the input :
+//TTF_SizeText(global, s->add_ENTER_every(14, buffers[1]).c_str(), &tmp_w, &tmp_h);
+s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
+            TTF_FontHeight(global)*6.5, TTF_FontHeight(global)*(1+(buffers[1].length())/14 -1/14),// w , h
+            10);
+*/
+
+bool FlashCards::readDocument(std::string filename){
+    std::string line;
+    std::ifstream myfile(filename);
+    if(!myfile.is_open())
+        return false;
+    while (getline(myfile, line)) {
+        // Do something with the line
+    }
+    myfile.close();
+    return true;
 }

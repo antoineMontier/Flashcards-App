@@ -552,8 +552,8 @@ void SDL_Screen::filledRect(int x, int y, int width, int height, int rounding){
     if(rounding > fmin(width, height)/2.0)
         rounding = fmin(width, height)/2.0;
     //let's draw the core rectangles
-    filledRect(x, y + rounding, width, height-2*rounding);
-    filledRect(x + rounding, y, width-2*rounding, height);
+    filledRect(x, y + rounding, width + 1, height-2*rounding);
+    filledRect(x + rounding, y, width-2*rounding, height + 1);
 
     //draw the 4 corners
 
@@ -573,8 +573,8 @@ void SDL_Screen::filledRect(int x, int y, int width, int height, int rounding, u
     if(rounding > fmin(width, height)/2.0)
         rounding = fmin(width, height)/2.0;
     //let's draw the core rectangles
-    filledRect(x, y + rounding, width, height-2*rounding);
-    filledRect(x + rounding, y, width-2*rounding, height);
+    filledRect(x, y + rounding, width + 1, height-2*rounding);
+    filledRect(x + rounding, y, width-2*rounding, height + 1);
 
     //draw the 4 corners
 
