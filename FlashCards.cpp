@@ -265,7 +265,7 @@ s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
 */
 
 bool FlashCards::readDocument(std::string filename){
-    std::string line;
+    std::string line; 
     std::ifstream myfile(filename);
     if(!myfile.is_open())
         return false;
