@@ -347,7 +347,7 @@ bool FlashCards::readDocument(std::string filename){
                         std::cout << "Close questions fields before closing the question itself\n" <<std::endl;
                         return false;
                         //throw std::runtime_error("Close questions fields before closing the question itself\n");
-                    }else if(packages->get(packages->size() - 1)->question_count() !=0 && (packages->get(packages->size() - 1)->get_lastQuestion().question == "" || packages->get(packages->size() - 1)->get_lastQuestion().answer == "")){
+                    }else if(packages->get(packages->size() - 1)->question_count() !=0 && (packages->get(packages->size() - 1)->get_lastQuestion()->question == "" || packages->get(packages->size() - 1)->get_lastQuestion()->answer == "")){
                         std::cout << "step = 02 " << reading_step++ << std::endl;
                         std::cout << "cannot close a question if both the question and answer fields are empty\n" <<std::endl;
                         return false;
@@ -355,12 +355,7 @@ bool FlashCards::readDocument(std::string filename){
                     }else{
                         std::cout << "step = 03 " << reading_step++ << std::endl;
                         std::cout << "step = C " << reading_step++ << std::endl;
-                        if(packages->get(packages->size() - 1)->question_count() !=0){
-                            std::cout << "\n\n\n\n\n";
-                            packages->get(packages->size() - 1)->get_lastQuestion().question = buff1;
-                            packages->get(packages->size() - 1)->get_lastQuestion().hint = buff2;
-                            packages->get(packages->size() - 1)->get_lastQuestion().answer = buff3;
-                        }
+                        packages->get(packages->size() - 1)->add_question(buff1, buff2, buff3);
                         std::cout << "step = D " << reading_step++ << std::endl;
                         buff1 = buff2 = buff3 = "";
                         inQuestionGrp = false;

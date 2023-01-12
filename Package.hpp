@@ -10,7 +10,7 @@ class Package{
     private :
         std::string package_name;
 
-        LinkedList<Question>* questions;
+        LinkedList<Question*>* questions;
 
     public :
 
@@ -19,10 +19,10 @@ class Package{
 
         ~Package();
 
-        bool add_question(Question q);
+        bool add_question(Question *q);
         bool add_question(std::string question, std::string answer, std::string hint="");
 
-        Question get_question(int index) const;
+        Question* get_question(int index) const;
 
         bool remove_question(int index);
 
@@ -34,7 +34,7 @@ class Package{
 
         bool setQuestion(int index, const std::string question, const std::string answer, const std::string hint="");
 
-        Question get_lastQuestion() const;
+        Question* get_lastQuestion() const;
 
         void printPackage()const;
 };
