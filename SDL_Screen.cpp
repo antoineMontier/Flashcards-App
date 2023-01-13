@@ -285,6 +285,13 @@ void SDL_Screen::line(int x1, int y1, int x2, int y2){
     if(SDL_RenderDrawLine(r, x1, y1, x2, y2) != 0)
         SDL_ExitWithError("failed to draw a line");
 }
+void SDL_Screen::line(int x1, int y1, int x2, int y2, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha){
+    SDL_SetRenderDrawColor(r, red, green, blue, alpha);
+    if(SDL_RenderDrawLine(r, x1, y1, x2, y2) != 0)
+        SDL_ExitWithError("failed to draw a line");
+    SDL_SetRenderDrawColor(r, _red, _green, _blue, _alpha);
+}
+
 
 void SDL_Screen::filledRect(int x, int y, int size){
     SDL_Rect rect = {x, y, size, size};

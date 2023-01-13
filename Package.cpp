@@ -5,11 +5,13 @@ using namespace std;
 Package::Package(){
     questions = new LinkedList<Question*>();
     package_name = "no_name";
+    underline = -1;
 }
 
 Package::Package(const std::string title){
     questions = new LinkedList<Question*>();
     package_name = title;
+    underline = -1;
 }
 
 Package::~Package(){
@@ -82,3 +84,9 @@ void Package::printPackage()const{
         questions->get(i)->printQuestion();
     std::cout << "====================================\n";
 }
+
+
+
+int Package::get_underline()const{return underline;}
+
+void Package::set_underline(int id){underline=id;}

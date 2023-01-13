@@ -5,6 +5,12 @@
 #include <fstream>
 #include "LinkedList.cpp"
 
+#define NO_UNDERLINE (-1)
+#define TITLE_UNDERLINE (0)
+#define QUESTION_UNDERLINE (1)
+#define ANSWER_UNDERLINE (2)
+#define HINT_UNDERLINE (3)
+
 class Package{
 
     private :
@@ -12,7 +18,12 @@ class Package{
 
         LinkedList<Question*>* questions;
 
+        int underline;
+
     public :
+
+        int get_underline()const;
+        void set_underline(int id);
 
         Package();
         Package(const std::string title);

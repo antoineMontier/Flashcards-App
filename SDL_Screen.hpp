@@ -98,8 +98,8 @@ class SDL_Screen{
         void bg(int red, int green, int blue);
 
         void updateSize();
-
         void line(int x1, int y1, int x2, int y2);
+        void line(int x1, int y1, int x2, int y2, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha=255);
 
         /// @brief creates an empty square
         /// @param x the upper left x-coordinate
