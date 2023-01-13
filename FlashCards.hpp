@@ -29,6 +29,7 @@ it's using files with a .flash extension;
 #define SETTINGS (-1)
 #define CREATION 2
 #define TEST_CENTER 1
+#define TEST_OFFSET (52651)
 
 
 #define PI (3.14159265)
@@ -63,6 +64,10 @@ class FlashCards{
         LinkedList<Package*> *packages;
 
         void catchFlashReadingError(std::ifstream *reader, const char * error_message);
+
+        int countLines(const std::string& filePath);
+
+        void openUnderlined();
 
     public:
 

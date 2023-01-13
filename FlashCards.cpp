@@ -104,7 +104,8 @@ void FlashCards::run(){
                             buffers[buffer_id] = "";
                             buffers_limits[buffer_id] = file_max_lenght;
                             screen = CREATION;
-                        }
+                        }else 
+                            openUnderlined();
                         break;
 
                     case SETTINGS:
@@ -179,7 +180,6 @@ void FlashCards::run(){
     printPackages();
 
 }
-
 
 void FlashCards::displaySettingsButton(){
     s->emptyRect(s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.07, 5, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
@@ -435,6 +435,24 @@ void FlashCards::catchFlashReadingError(std::ifstream *reader, const char * erro
     std::cout << "Error in reading .flashDocument : " << error_message << std::endl;
 }
 
+int FlashCards::countLines(const std::string& filePath){
+    std::ifstream file(filePath);
+    if(!file.is_open())
+        return 0;
+    std::string line;
+    int count = 0;
+    while (std::getline(file, line))
+        count++;
+    return count;
+}
+
+void FlashCards::openUnderlined(){
+    for(int i = 0 ; i < packages->size(); i++)
+        if(packages->get(i)->get_underline() == TITLE_UNDERLINE){
+            packages->get(i)->set_underline(NO_UNDERLINE);
+            screen = TEST_OFFSET + i;
+        }
+}
 
 
 
