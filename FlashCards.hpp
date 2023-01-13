@@ -85,6 +85,8 @@ class FlashCards{
         bool readDocument(std::string filename);//idea : read the total lines numer of the document and then show a progression bar depending on how much lines have been read
 
         void printPackages()const;
+
+        void displayPackagesNames()const;
 };
 
 

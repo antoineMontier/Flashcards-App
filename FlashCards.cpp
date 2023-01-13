@@ -200,6 +200,7 @@ void FlashCards::homeScreen(){
     displayCreateButton();
     s->setColor(150, 160, 170);
     s->text(s->W()*0.5 - TTF_FontHeight(global)*1.1, 10, "Home", global, title.r, title.g, title.b, title.a);
+    displayPackagesNames();
 }
 
 void FlashCards::settingsScreen(){
@@ -390,8 +391,23 @@ bool FlashCards::readDocument(std::string filename){
     return true;
 }
 
-
 void FlashCards::printPackages()const{
     for(int i=0; i< packages->size(); i++)
         packages->get(i)->printPackage();
+}
+
+void FlashCards::displayPackagesNames()const{
+    //display text : 
+    int hh, ww, max_width = s->W()*.05;
+    int txt_height = s->H()*.33;
+    for(int i = 0; i<packages->size(); i++){
+        TTF_SizeText(medium, packages->get(i)->getTitle().c_str(), &ww, &hh);
+        s->text(s->W()/2 - ww/2, txt_height, packages->get(i)->getTitle().c_str(), medium, title.r, title.g, title.b, title.a);
+        txt_height += hh*1.2;
+        max_width = max(max_width, ww);
+    }
+    //display box :
+    int box_padding = 5;
+    if(packages->size() != 0)
+        s->emptyRect(s->W()*.5 - max_width*.5 - box_padding, s->H()*.33 - box_padding, max_width + 2*box_padding, txt_height - s->H()*.33 + 2*box_padding, 10, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
 }

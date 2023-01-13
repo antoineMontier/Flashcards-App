@@ -46,16 +46,106 @@ sq(-20) = 2i*sq(5)
 </a>
 </Q>
 
+</p>
+
+
+<p=second>
+
+<Q>
+<q>
+this is the first question
+</q>
+
+<h>
+there is a useless hint here
+</h>
+
+<a>
+answer is not interesting
+</a>
+</Q>
 
 
 
+<Q>
+<q>
+when started the 1st world war
+</q>
+
+<h>
+it ended in 1918
+</h>
+
+<a>
+1914
+</a>
+</Q>
 
 
 
+<Q>
+<q>
+what is sq(-20)
+</q>
+
+<h>
+sq(-1) = i
+</h>
+
+<a>
+sq(-20) = 2i*sq(5)
+</a>
+</Q>
+
+</p>
+
+
+<p=other_package>
+
+<Q>
+<q>
+this is the first question
+</q>
+
+<h>
+there is a useless hint here
+</h>
+
+<a>
+answer is not interesting
+</a>
+</Q>
 
 
 
+<Q>
+<q>
+when started the 1st world war
+</q>
+
+<h>
+it ended in 1918
+</h>
+
+<a>
+1914
+</a>
+</Q>
 
 
+
+<Q>
+<q>
+what is sq(-20)
+</q>
+
+<h>
+sq(-1) = i
+</h>
+
+<a>
+sq(-20) = 2i*sq(5)
+</a>
+</Q>
 
 </p>
