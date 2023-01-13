@@ -21,7 +21,10 @@ FlashCards::FlashCards(){
     buffers_limits[1] = 0;
     buffers_limits[2] = 0;
     packages = new LinkedList<Package*>();
-    package_advancement = package_testing = -1;
+    package_advancement = 0;
+    package_testing = -1;
+    hint_shown = true;
+    answer_shown = true;
 }
 
 FlashCards::~FlashCards(){
@@ -143,7 +146,7 @@ void FlashCards::run(){
                             if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.01, s->H()*.07, s->H()*.035)){
                                 screen = HOME;
                                 package_testing = -1;
-                                package_advancement = -1;
+                                package_advancement = 0;
                             }
                         }
                         break;
@@ -404,10 +407,13 @@ bool FlashCards::readDocument(std::string filename){
 
                 if(inQuestionGrp){
                     if(inQuestion){
+                        replace_n(&buff1);
                         buff1 += line[i];
                     }else if(inHint){
+                        replace_n(&buff2);
                         buff2 += line[i];
                     }else if(inAnswer){
+                        replace_n(&buff3);
                         buff3 += line[i];
                         }
                 }
@@ -417,6 +423,17 @@ bool FlashCards::readDocument(std::string filename){
     myfile.close();
     return true;
 }
+
+void FlashCards::replace_n(std::string*s){
+    size_t pos = s->find("\\n");
+    while (pos != std::string::npos)
+    {
+        s->erase(pos, 2);
+        s->insert(pos, "\n");
+        pos = s->find("\\n", pos + 1);
+    }
+}
+
 
 void FlashCards::printPackages()const{
     for(int i=0; i< packages->size(); i++)
@@ -487,14 +504,25 @@ void FlashCards::testScreen(int package_id){
     //=== breakline
     s->line(0, 10 + hh + 20, s->W(), 10 + hh + 20);
     //=== display the package advancement bar : 
-    progressionBarHorizontal(15, s->H() - 30, 200, 15, 10, 4, 10);
+    progressionBarHorizontal(15, s->H() - 30, 200, 15, 10, package_advancement, packages->get(package_id)->question_count());
+    // and its percentage
 
+    // TODO
+
+    //=== display the question
+    s->paragraph(s->W()*.5, s->H()*.1, packages->get(package_id)->get_question(package_advancement)->question.c_str(), medium);
+    //=== display the hint
+    if(hint_shown || answer_shown)
+        s->paragraph(s->W()*.2 , s->H()*.66, packages->get(package_id)->get_question(package_advancement)->hint.c_str(), medium);
+    //=== display the answer
+    if(answer_shown)
+        s->paragraph(s->W()*.6, s->H()*.66, packages->get(package_id)->get_question(package_advancement)->answer.c_str(), medium);
 }
 
 void FlashCards::progressionBarHorizontal(int x, int y, int w, int h, int rounding, int value, int total){
-    if(value < 0 || value > total || total <= 0)//wrong arguments gestion
-        return;
     s->emptyRect(x, y, w, h, rounding, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
+    if(value <= 0 || value > total || total <= 0)//wrong arguments gestion
+        return;
     s->filledRect(x, y, w*(value/(double)total), h, rounding, buttonFontColor.r, buttonFontColor.g, buttonFontColor.b, buttonFontColor.a);
 }
 

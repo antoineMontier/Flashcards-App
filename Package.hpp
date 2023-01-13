@@ -7,9 +7,6 @@
 
 #define NO_UNDERLINE (-1)
 #define TITLE_UNDERLINE (0)
-#define QUESTION_UNDERLINE (1)
-#define ANSWER_UNDERLINE (2)
-#define HINT_UNDERLINE (3)
 
 class Package{
 

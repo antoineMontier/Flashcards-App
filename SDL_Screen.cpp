@@ -869,19 +869,18 @@ void SDL_Screen::paragraph(int x, int y, const char* text, TTF_Font* font){
 
     if(text[0] == '\0')
         return;
+    int ww, hh;
     SDL_Color text_color = {_red, _green, _blue, _alpha};
     // Split the text by newline characters
     std::stringstream textStream(text);
     std::string line;
-    while (std::getline(textStream, line))
-    {
+    while (std::getline(textStream, line)){
+        TTF_SizeText(font, line.c_str(), &ww, &hh);
         // Create a surface with the text 
         SDL_Surface* lineSurface = TTF_RenderText_Blended(font, line.c_str(), text_color);
-        int w = lineSurface->w;
-        int h = lineSurface->h;
 
         SDL_Texture* lineTexture = SDL_CreateTextureFromSurface(r, lineSurface);
-        SDL_Rect lineRect = { x, y, w, h };
+        SDL_Rect lineRect = {x - ww/2, y, ww, hh};
         SDL_RenderCopy(r, lineTexture, NULL, &lineRect);// display
 
         // Free memory
@@ -889,7 +888,7 @@ void SDL_Screen::paragraph(int x, int y, const char* text, TTF_Font* font){
         SDL_DestroyTexture(lineTexture);
 
         //next line of text
-        y += TTF_FontHeight(font);
+        y += hh;
     }
 }
 

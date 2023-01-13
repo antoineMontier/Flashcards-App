@@ -63,7 +63,10 @@ class FlashCards{
         const char*buffer;
         int tmp_h, tmp_w;
         int package_testing;//-1 if no package selected
-        int package_advancement;//-1 if no advancement
+        int package_advancement;//0 if no advancement
+        bool hint_shown;
+        bool answer_shown;
+
 
         LinkedList<Package*> *packages;
 
@@ -72,6 +75,8 @@ class FlashCards{
         int countLines(const std::string& filePath);
 
         void openUnderlined();
+
+        void replace_n(std::string*s);
 
     public:
 
@@ -89,7 +94,7 @@ class FlashCards{
 
         void settingsScreen();
 
-        void homeScreen();
+        void homeScreen();//idea : be able to scroll the package title window displayed in the center of the screen
 
         void creationScreen();
 
