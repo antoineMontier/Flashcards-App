@@ -21,6 +21,7 @@ FlashCards::FlashCards(){
     buffers_limits[1] = 0;
     buffers_limits[2] = 0;
     packages = new LinkedList<Package*>();
+    package_advancement = package_testing = -1;
 }
 
 FlashCards::~FlashCards(){
@@ -36,6 +37,8 @@ FlashCards::~FlashCards(){
 }
 
 void FlashCards::run(){
+                                readDocument("one.flash");//to be removed
+
     int txt_heightt = s->H()*.33;
     while(s->isRunning()){//main loop
         switch(screen){
@@ -53,7 +56,10 @@ void FlashCards::run(){
                 break;
 
             default:
-                s->stopRunning();//a bug happened
+                if(screen >= TEST_OFFSET && screen < TEST_OFFSET + MAX_PACKAGES){
+                    testScreen(package_testing);
+                }else
+                    s->stopRunning();//a bug happened
                 break;
         }
         
@@ -133,6 +139,13 @@ void FlashCards::run(){
                         break;
 
                     default:
+                        if(screen >= TEST_OFFSET && screen < TEST_OFFSET + MAX_PACKAGES){
+                            if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.01, s->H()*.07, s->H()*.035)){
+                                screen = HOME;
+                                package_testing = -1;
+                                package_advancement = -1;
+                            }
+                        }
                         break;
                 }
                 break;
@@ -451,11 +464,39 @@ void FlashCards::openUnderlined(){
         if(packages->get(i)->get_underline() == TITLE_UNDERLINE){
             packages->get(i)->set_underline(NO_UNDERLINE);
             screen = TEST_OFFSET + i;
+            package_testing = i;
         }
 }
 
+void FlashCards::testScreen(int package_id){
+    if(package_id < 0)
+        return;
+    if(package_id >= packages->size()){
+        std::cout << "\n\nerror package_id is out of range\n\n" << std::endl;
+        return;
+    }
+    //=== return button
+    s->setColor(background.r, background.g, background.b);
+    s->bg();
+    s->setColor(buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
+    displayReturnButton();
+    //=== title of the package
+    int ww, hh;
+    TTF_SizeText(global, packages->get(package_id)->getTitle().c_str(), &ww, &hh);
+    s->text(s->W()/2 - ww/2, 10, packages->get(package_id)->getTitle().c_str(), global, title.r, title.g, title.b, title.a);
+    //=== breakline
+    s->line(0, 10 + hh + 20, s->W(), 10 + hh + 20);
+    //=== display the package advancement bar : 
+    progressionBarHorizontal(15, s->H() - 30, 200, 15, 10, 4, 10);
 
+}
 
+void FlashCards::progressionBarHorizontal(int x, int y, int w, int h, int rounding, int value, int total){
+    if(value < 0 || value > total || total <= 0)//wrong arguments gestion
+        return;
+    s->emptyRect(x, y, w, h, rounding, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
+    s->filledRect(x, y, w*(value/(double)total), h, rounding, buttonFontColor.r, buttonFontColor.g, buttonFontColor.b, buttonFontColor.a);
+}
 
 
 

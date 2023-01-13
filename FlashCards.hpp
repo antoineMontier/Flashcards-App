@@ -27,9 +27,11 @@ it's using files with a .flash extension;
 
 #define HOME 0
 #define SETTINGS (-1)
-#define CREATION 2
-#define TEST_CENTER 1
+#define CREATION (2)
+#define TEST_CENTER (1)
 #define TEST_OFFSET (52651)
+
+#define MAX_PACKAGES (16)
 
 
 #define PI (3.14159265)
@@ -60,6 +62,8 @@ class FlashCards{
         const int file_max_lenght = 13;
         const char*buffer;
         int tmp_h, tmp_w;
+        int package_testing;//-1 if no package selected
+        int package_advancement;//-1 if no advancement
 
         LinkedList<Package*> *packages;
 
@@ -79,7 +83,7 @@ class FlashCards{
 
         void displaySettingsButton();
 
-        void displayReturnButton();
+        void displayReturnButton();//TODO : fix the rollover (only working when the text (not the button) is pressed)
 
         void displayCreateButton();
 
@@ -89,11 +93,15 @@ class FlashCards{
 
         void creationScreen();
 
-        bool readDocument(std::string filename);//idea : read the total lines numer of the document and then show a progression bar depending on how much lines have been read
+        void testScreen(int package_id);
+
+        bool readDocument(std::string filename);
 
         void printPackages()const;
 
         void displayPackagesNames()const;
+
+        void progressionBarHorizontal(int x, int y, int w, int h, int rounding, int value, int total);
 };
 
 
