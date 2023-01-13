@@ -235,17 +235,17 @@ void FlashCards::settingsScreen(){
     // box
     TTF_SizeText(global, (buffers[1].substr(0, 14)).c_str(), &tmp_w, &tmp_h);
     if((int)(buffers[1].length()) <= file_max_lenght)
-        s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
+        s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.45, s->H()*0.45,// x , y
                     tmp_w + 2 + 2.5/(buffers[1].length() + 0.2), tmp_h,// w , h
                     10, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
     else// red coloration if the text input is at it's max size
-        s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
+        s->emptyRect(s->W()*0.5 - TTF_FontHeight(global)*3.45, s->H()*0.45,// x , y
                         tmp_w + 2 + 2.5/(buffers[1].length() + 0.2), tmp_h,// w , h
                         10, buttonColor.r, buttonColor.g/2, buttonColor.b/2, buttonColor.a);
     
     //darken background if text focus is on the text input window
     if(typingAllowed)
-        s->filledRect(s->W()*0.5 - TTF_FontHeight(global)*3.5, s->H()*0.45,// x , y
+        s->filledRect(s->W()*0.5 - TTF_FontHeight(global)*3.45, s->H()*0.45,// x , y
                         tmp_w + 2 + 2.5/(buffers[1].length() + 0.2), tmp_h,// w , h
                         10, 0, 0, 0, 50);//round red green blue alpha
 
@@ -317,8 +317,8 @@ bool FlashCards::readDocument(std::string filename){
                 if(line[i] == '<' && i + 4 <line.length())
                     if(line[i+1] == 'p' && line[i+2] == '='){
                         if(line[i+3] == ' '){
-                            std::cout << "package name must be not null\nUse <p=<package-name>>" <<std::endl;
-                            throw std::runtime_error("package name must be not null\nUse <p=<package-name>>");
+                            catchFlashReadingError(&myfile, "package name must be not null\nUse <p=<package-name>>");
+                            return false;
                             }
                         else{
                             std::string title = "";
@@ -338,8 +338,8 @@ bool FlashCards::readDocument(std::string filename){
             for(long unsigned int i = 0 ; i < line.length() ; i++){
                 if(line[i] == '<' && i + 3 < line.length() && line[i+1] == '/' && line[i+2] == 'p' && line[i+3] == '>'){//await for the package to be closed
                     if(inQuestionGrp){
-                        std::cout << "package is close before question ended\n" <<std::endl;
-                        throw std::runtime_error("package is close before question ended\n");
+                        catchFlashReadingError(&myfile, "package is close before question ended");
+                        return false;
                     }else{
                         inPackage = false;
                         i = line.length();//stop the loop
@@ -348,13 +348,11 @@ bool FlashCards::readDocument(std::string filename){
                     inQuestionGrp = true;
                 }else if(inQuestionGrp && line[i] == '<' && i + 3 < line.length() && line[i+1] == '/' && line[i+2] == 'Q' && line[i+3] == '>'){//await for a question to be closed
                     if(inAnswer || inHint || inQuestion){
-                        std::cout << "Close questions fields before closing the question itself\n" <<std::endl;
+                        catchFlashReadingError(&myfile, "Close questions fields before closing the question itself");
                         return false;
-                        //throw std::runtime_error("Close questions fields before closing the question itself\n");
                     }else if(packages->get(packages->size() - 1)->question_count() !=0 && (packages->get(packages->size() - 1)->get_lastQuestion()->question == "" || packages->get(packages->size() - 1)->get_lastQuestion()->answer == "")){
-                        std::cout << "cannot close a question if both the question and answer fields are empty\n" <<std::endl;
+                        catchFlashReadingError(&myfile, "cannot close a question if both the question and answer fields are empty");
                         return false;
-                        //throw std::runtime_error("cannot close a question if both the question and answer fields are empty\n");
                     }else{
                         packages->get(packages->size() - 1)->add_question(buff1, buff3, buff2);
                         buff1 = buff2 = buff3 = "";
@@ -362,22 +360,22 @@ bool FlashCards::readDocument(std::string filename){
                     }
                 }else if(inQuestionGrp && line[i] == '<' && i + 2 < line.length() && line[i + 1] == 'q' && line[i + 2] == '>'){//await for a question_field to be read
                     if(inAnswer || inHint || inQuestion){
-                        std::cout << "Close questions fields before giving the question field\n" <<std::endl;
-                        throw std::runtime_error("Close questions fields before giving the question field\n");
+                        catchFlashReadingError(&myfile, "Close questions fields before giving the question field");
+                        return false;
                         }
                     inQuestion = true;
                     i+=3;
                 }else if(inQuestionGrp && line[i] == '<' && i + 2 < line.length() && line[i + 1] == 'h' && line[i + 2] == '>'){//await for a hint to be read
                     if(inAnswer || inHint || inQuestion){
-                        std::cout << "Close questions fields before giving the hint field\n" <<std::endl;
-                        throw std::runtime_error("Close questions fields before giving the hint field\n");
+                        catchFlashReadingError(&myfile, "Close questions fields before giving the hint field");
+                        return false;
                         }
                     inHint = true;
                     i+=3;
                 }else if(inQuestionGrp && line[i] == '<' && i + 2 < line.length() && line[i + 1] == 'a' && line[i + 2] == '>'){//await for an answer to be read
                     if(inAnswer || inHint || inQuestion){
-                        std::cout << "Close questions fields before giving the answer field\n" <<std::endl;
-                        throw std::runtime_error("Close questions fields before giving the answer field\n");
+                        catchFlashReadingError(&myfile, "Close questions fields before giving the answer field");
+                        return false;
                         }
                     inAnswer = true;
                     i+=3;
@@ -430,3 +428,17 @@ void FlashCards::displayPackagesNames()const{
         s->emptyRect(s->W()*.5 - max_width*.5 - box_padding, s->H()*.33 - box_padding, max_width + 2*box_padding,
         txt_height - s->H()*.33 + 2*box_padding, 10, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
 }
+
+void FlashCards::catchFlashReadingError(std::ifstream *reader, const char * error_message){
+    if(reader->is_open())
+        reader->close();
+    std::cout << "Error in reading .flashDocument : " << error_message << std::endl;
+}
+
+
+
+
+
+
+
+

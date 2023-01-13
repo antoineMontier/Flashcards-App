@@ -62,6 +62,8 @@ class FlashCards{
 
         LinkedList<Package*> *packages;
 
+        void catchFlashReadingError(std::ifstream *reader, const char * error_message);
+
     public:
 
         FlashCards();
