@@ -8,6 +8,10 @@
 #include <vector>
 #include <sstream>
 
+#define RIGHT (1)
+#define CENTER (0)
+#define LEFT (-1)
+
 
 class SDL_Screen{
     
@@ -173,6 +177,10 @@ class SDL_Screen{
                     unsigned char red, unsigned char green=255, unsigned char blue=255, unsigned char alpha=255);
 
         void paragraph(int x, int y, const char* text, TTF_Font* font);
+        void paragraph(int x, int y, int text_width, const char* text, TTF_Font* font, int align) ;
+
+        void paragraph(int x, int y, int text_width, const char* text, TTF_Font* font, int align,
+                    unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
 
         void displayPortions(int cut_x, int cut_y, unsigned char red=255, unsigned char green=0, unsigned char blue=0);
 

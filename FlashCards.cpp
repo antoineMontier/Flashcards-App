@@ -12,6 +12,8 @@ FlashCards::FlashCards(){
     background = {150, 150, 230, 255};
     buttonColor = {100, 100, 100, 255};
     buttonFontColor = {0, 128, 255, 255};
+    anwserColor = {0, 255, 0, 255};
+    hintColor = {0, 0, 255, 255};
     typingAllowed = false;
     typingNow = 0;
     buffers[0] = "";
@@ -23,8 +25,8 @@ FlashCards::FlashCards(){
     packages = new LinkedList<Package*>();
     package_advancement = 0;
     package_testing = -1;
-    hint_shown = true;
-    answer_shown = true;
+    hint_shown = false;
+    answer_shown = false;
 }
 
 FlashCards::~FlashCards(){
@@ -189,7 +191,7 @@ void FlashCards::run(){
                 break;
             }
         }
-        //s->displayPortions(25, 8);
+        s->displayPortions(3, 20);
         s->refreshAndDetails();
     }
     //print the packages loaded in memory 
@@ -513,10 +515,15 @@ void FlashCards::testScreen(int package_id){
     s->paragraph(s->W()*.5, s->H()*.1, packages->get(package_id)->get_question(package_advancement)->question.c_str(), medium);
     //=== display the hint
     if(hint_shown || answer_shown)
-        s->paragraph(s->W()*.2 , s->H()*.66, packages->get(package_id)->get_question(package_advancement)->hint.c_str(), medium);
+        s->paragraph(s->W()*.33 , s->H()*.5, s->W()*.2, packages->get(package_id)->get_question(package_advancement)->hint.c_str(), medium, CENTER);
+    else
+        displayHintButton();
     //=== display the answer
     if(answer_shown)
-        s->paragraph(s->W()*.6, s->H()*.66, packages->get(package_id)->get_question(package_advancement)->answer.c_str(), medium);
+        s->paragraph(s->W()*.66 , s->H()*.5, s->W()*.2, packages->get(package_id)->get_question(package_advancement)->answer.c_str(), medium, CENTER);
+    else
+        displayAnswerButton();
+
 }
 
 void FlashCards::progressionBarHorizontal(int x, int y, int w, int h, int rounding, int value, int total){
@@ -526,6 +533,19 @@ void FlashCards::progressionBarHorizontal(int x, int y, int w, int h, int roundi
     s->filledRect(x, y, w*(value/(double)total), h, rounding, buttonFontColor.r, buttonFontColor.g, buttonFontColor.b, buttonFontColor.a);
 }
 
+void FlashCards::displayAnswerButton(){
+    int tmp_w, tmp_y;
+    s->filledRect(s->W()*.75 - test_button_w/2, s->H()*.4 - test_button_h/2, test_button_w, test_button_h, 10, anwserColor.r, anwserColor.g, anwserColor.b, anwserColor.a);
+    TTF_SizeText(global, "show answer", &tmp_w, &tmp_y);
+    s->text(s->W()*.75 - tmp_w/2, s->H()*.4 - tmp_y/2, "show answer", global, background.r, background.g, background.b, background.a);
+}
+
+void FlashCards::displayHintButton(){
+    int tmp_w, tmp_y;
+    s->filledRect(s->W()*.25 - test_button_w/2, s->H()*.4 - test_button_h/2, test_button_w, test_button_h, 10, hintColor.r, hintColor.g, hintColor.b, hintColor.a);
+    TTF_SizeText(global, "show hint", &tmp_w, &tmp_y);
+    s->text(s->W()*.25 - tmp_w/2, s->H()*.4 - tmp_y/2, "show hint", global, background.r, background.g, background.b, background.a);
+}
 
 
 

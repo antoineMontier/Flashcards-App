@@ -54,6 +54,8 @@ class FlashCards{
         SDL_Color background;
         SDL_Color buttonColor;
         SDL_Color buttonFontColor;
+        SDL_Color anwserColor;
+        SDL_Color hintColor;
         bool typingAllowed;
         int typingNow;
         int buffer_id;
@@ -66,7 +68,8 @@ class FlashCards{
         int package_advancement;//0 if no advancement
         bool hint_shown;
         bool answer_shown;
-
+        const int test_button_w = 200;
+        const int test_button_h = 60;
 
         LinkedList<Package*> *packages;
 
@@ -107,6 +110,10 @@ class FlashCards{
         void displayPackagesNames()const;
 
         void progressionBarHorizontal(int x, int y, int w, int h, int rounding, int value, int total);
+
+        void displayAnswerButton();
+
+        void displayHintButton();
 };
 
 

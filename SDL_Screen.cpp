@@ -892,6 +892,79 @@ void SDL_Screen::paragraph(int x, int y, const char* text, TTF_Font* font){
     }
 }
 
+
+void SDL_Screen::paragraph(int x, int y, int text_width, const char* text, TTF_Font* font, int align){
+
+    if(text[0] == '\0' || text_width <= 0)
+        return;
+    int ww, hh;
+    SDL_Color text_color = {_red, _green, _blue, _alpha};
+    // Split the text by newline characters
+    std::stringstream textStream(text);
+    std::string line;
+    while (std::getline(textStream, line)){
+        TTF_SizeText(font, line.c_str(), &ww, &hh);
+        // Create a surface with the text 
+        SDL_Surface* lineSurface = TTF_RenderText_Blended(font, line.c_str(), text_color);
+
+        SDL_Texture* lineTexture = SDL_CreateTextureFromSurface(r, lineSurface);
+
+        if(align == LEFT){
+            SDL_Rect lineRect = {x, y, ww, hh};
+            SDL_RenderCopy(r, lineTexture, NULL, &lineRect);// display
+        }else if(align == RIGHT){
+            SDL_Rect lineRect = {x + text_width - ww, y, ww, hh};
+            SDL_RenderCopy(r, lineTexture, NULL, &lineRect);// display
+        }else{ // center
+            SDL_Rect lineRect = {x - (int)(ww*.5), y, ww, hh};
+            SDL_RenderCopy(r, lineTexture, NULL, &lineRect);// display
+        }
+
+        // Free memory
+        SDL_FreeSurface(lineSurface);
+        SDL_DestroyTexture(lineTexture);
+
+        //next line of text
+        y += hh;
+    }
+}
+
+void SDL_Screen::paragraph(int x, int y, int text_width, const char* text, TTF_Font* font, int align, unsigned char red, unsigned char green=255, unsigned char blue=255, unsigned char alpha=255){
+
+    if(text[0] == '\0' || text_width <= 0)
+        return;
+    int ww, hh;
+    SDL_Color text_color = {red, green, blue, alpha};
+    // Split the text by newline characters
+    std::stringstream textStream(text);
+    std::string line;
+    while (std::getline(textStream, line)){
+        TTF_SizeText(font, line.c_str(), &ww, &hh);
+        // Create a surface with the text 
+        SDL_Surface* lineSurface = TTF_RenderText_Blended(font, line.c_str(), text_color);
+
+        SDL_Texture* lineTexture = SDL_CreateTextureFromSurface(r, lineSurface);
+
+        if(align == LEFT){
+            SDL_Rect lineRect = {x, y, ww, hh};
+            SDL_RenderCopy(r, lineTexture, NULL, &lineRect);// display
+        }else if(align == RIGHT){
+            SDL_Rect lineRect = {x + text_width - ww, y, ww, hh};
+            SDL_RenderCopy(r, lineTexture, NULL, &lineRect);// display
+        }else{ // center
+            SDL_Rect lineRect = {x - (int)(ww*.5), y, ww, hh};
+            SDL_RenderCopy(r, lineTexture, NULL, &lineRect);// display
+        }
+
+        // Free memory
+        SDL_FreeSurface(lineSurface);
+        SDL_DestroyTexture(lineTexture);
+
+        //next line of text
+        y += hh;
+    }
+}
+
 void SDL_Screen::displayPortions(int cut_x, int cut_y, unsigned char red, unsigned char green, unsigned char blue){
     SDL_SetRenderDrawColor(r, red, green, blue, 255);
     for(int i = 0; i <= cut_x; i++)
