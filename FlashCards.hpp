@@ -54,8 +54,9 @@ class FlashCards{
         SDL_Color background;
         SDL_Color buttonColor;
         SDL_Color buttonFontColor;
-        SDL_Color anwserColor;
+        SDL_Color answerColor;
         SDL_Color hintColor;
+        SDL_Color nextColor;
         bool typingAllowed;
         int typingNow;
         int buffer_id;
@@ -114,6 +115,8 @@ class FlashCards{
         void displayAnswerButton();
 
         void displayHintButton();
+
+        void displayNextButton();
 };
 
 
