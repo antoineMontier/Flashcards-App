@@ -30,6 +30,7 @@ FlashCards::FlashCards(){
     package_testing = -1;
     hint_shown = false;
     answer_shown = false;
+    focus = -1;
 }
 
 FlashCards::~FlashCards(){
@@ -45,13 +46,12 @@ FlashCards::~FlashCards(){
 }
 
 void FlashCards::run(){
-                   //             readDocument("one.flash");//to be removed
-
-    int txt_heightt = s->H()*.33;
+    readDocument("one.flash");//to be removed
     while(s->isRunning()){//main loop
         switch(screen){
             
             case HOME:
+                update_underline();
                 homeScreen();
                 break;
 
@@ -92,21 +92,10 @@ void FlashCards::run(){
             case SDL_MOUSEMOTION:
                 m_x = e.button.x;
                 m_y = e.button.y;
-                if(screen == HOME){
-                    txt_heightt = s->H()*.33;
-                    for(int i = 0; i < packages->size(); i++){
-                        int ww, hh;
-                        TTF_SizeText(medium, packages->get(i)->getTitle().c_str(), &ww, &hh);
-                        if(s->rollover(e.button.x, e.button.y, s->W()/2 - ww/2, txt_heightt, ww, hh))
-                            packages->get(i)->set_underline(TITLE_UNDERLINE);
-                        else
-                            packages->get(i)->set_underline(NO_UNDERLINE);
-                        txt_heightt += hh*1.2;
-                    }
-                }
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
+                focus = -1;
                 int tmp_w, tmp_y;
                 //border
                 TTF_SizeText(global, "home", &tmp_w, &tmp_y);
@@ -117,12 +106,14 @@ void FlashCards::run(){
                             buffers[buffer_id] = "";
                             buffers_limits[buffer_id] = file_max_lenght;
                             screen = SETTINGS;
+                            focus = -1;
                         }else if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.47, 120, 3*TTF_FontHeight(medium))){
                             buffer_id = 1;
                             typingAllowed = true;
                             buffers[buffer_id] = "";
                             buffers_limits[buffer_id] = file_max_lenght;
                             screen = CREATION;
+                            focus = -1;
                         }else 
                             openUnderlined();
                         break;
@@ -133,6 +124,7 @@ void FlashCards::run(){
                             typingNow = false;
                             buffers[buffer_id = 0] = "";//clean buffer
                             screen = HOME;
+                            focus = -1;
                         }else if(s->rollover(e.button.x, e.button.y, s->W()*0.5 - TTF_FontHeight(global)*1 + tmp_w, s->H()*.45, 60, 30)){
                             readDocument(buffers[buffer_id] + ".flash");
                             buffers[buffer_id] = "";
@@ -148,6 +140,7 @@ void FlashCards::run(){
                             typingNow = false;
                             buffers[buffer_id = 0] = "";//clean buffer
                             screen = HOME;
+                            focus = -1;
                         }
                         break;
 
@@ -155,6 +148,7 @@ void FlashCards::run(){
                         if(screen >= TEST_OFFSET && screen < TEST_OFFSET + MAX_PACKAGES){
                             if(s->rollover(e.button.x, e.button.y, 75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1)){//return button
                                 screen = HOME;
+                                focus = -1;
                                 package_testing = -1;
                                 package_advancement = 0;
                             }else if(s->rollover(e.button.x, e.button.y, s->W()*.25 - test_button_w/2, s->H()*.4 - test_button_h/2, test_button_w, test_button_h)){//hint button
@@ -172,6 +166,28 @@ void FlashCards::run(){
 
             case SDL_KEYDOWN: // SDL_KEYDOWN : hold a key            SDL_KEYUP : release a key
                 switch (e.key.keysym.sym){ // returns the key ('0' ; 'e' ; 'SPACE'...)
+
+                case SDLK_TAB:
+                    switch(screen){
+                        case HOME:
+                            focus = (focus + 1) % (2 + packages->size());//settings, creation, 1 per package
+                            break;
+
+                        case SETTINGS:
+                            focus = (focus + 1) % (2);//return, text input
+                            break;
+
+                        case CREATION:
+                            focus = (focus + 1) % (2);//return, text input
+                            break;
+
+                        default:
+                            if(screen >= TEST_OFFSET){
+                                focus = (focus + 1) % (4);//return, hint, answer, next
+                            }
+                            break;
+                    }
+                    break;
 
                 case SDLK_h:
                     if(screen >= TEST_OFFSET)
@@ -191,7 +207,7 @@ void FlashCards::run(){
                     else{//next
                         package_advancement = (package_advancement + 1) % packages->get(package_testing)->question_count();
                         hint_shown = answer_shown = false;
-                    }
+                    }                            
                     break;
 
                 case SDLK_BACKSPACE:
@@ -205,6 +221,24 @@ void FlashCards::run(){
                     if(screen == SETTINGS){
                         readDocument(buffers[buffer_id] + ".flash");
                         buffers[buffer_id] = "";
+                    }else if(screen == HOME){
+                        if(focus == packages->size()){
+                            buffer_id = 1;
+                            buffers[buffer_id] = "";
+                            buffers_limits[buffer_id] = file_max_lenght;
+                            screen = SETTINGS;
+                            focus = -1;
+                        }else if(focus == packages->size() + 1){
+                            buffer_id = 1;
+                            typingAllowed = true;
+                            buffers[buffer_id] = "";
+                            buffers_limits[buffer_id] = file_max_lenght;
+                            screen = CREATION;
+                            focus = -1;
+                        }else{
+                            openUnderlined();
+                            focus = -1;
+                        }
                     }
                     break;
 
@@ -249,7 +283,7 @@ void FlashCards::displaySettingsButton(){
                         s->H()*.07*0.1,
                         buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
     }
-    if(s->rollover(m_x, m_y, s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.07))
+    if(s->rollover(m_x, m_y, s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.07) || (screen == HOME && focus == packages->size()))
         s->filledRect(s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.07, 5, buttonColor.r*.4, buttonColor.g*.4, buttonColor.b*.4, buttonColor.a*.2);
 }
 
@@ -267,7 +301,7 @@ void FlashCards::displayReturnButton(){
 void FlashCards::displayCreateButton(){
     s->emptyRect(s->W()*.01, s->H()*.47, 120, 3*TTF_FontHeight(medium), 5, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
     s->paragraph(s->W()*.01 + 120*.5, s->H()*.47, 200, "Create\na new\npackage", medium, CENTER, buttonFontColor.r, buttonFontColor.g, buttonFontColor.b, buttonFontColor.a);
-    if(s->rollover(m_x, m_y, s->W()*.01, s->H()*.47, 120, 3*TTF_FontHeight(medium)))
+    if(s->rollover(m_x, m_y, s->W()*.01, s->H()*.47, 120, 3*TTF_FontHeight(medium)) || (screen == HOME && focus == packages->size() + 1))
         s->filledRect(s->W()*.01, s->H()*.47, 120, 3*TTF_FontHeight(medium), 5, buttonColor.r*.4, buttonColor.g*.4, buttonColor.b*.4, buttonColor.a*.2);
 }
 
@@ -622,4 +656,36 @@ bool FlashCards::package_is_already_loaded(std::string package_title){
             return true;
     return false;
 }
+
+void FlashCards::update_underline(){
+    if(screen == HOME){
+        int txt_heightt = s->H()*.33;
+        for(int i = 0; i < packages->size(); i++){
+            int ww, hh;
+            TTF_SizeText(medium, packages->get(i)->getTitle().c_str(), &ww, &hh);
+            if(s->rollover(m_x, m_y, s->W()/2 - ww/2, txt_heightt, ww, hh) || focus == i)
+                packages->get(i)->set_underline(TITLE_UNDERLINE);
+            else
+                packages->get(i)->set_underline(NO_UNDERLINE);
+            txt_heightt += hh*1.2;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

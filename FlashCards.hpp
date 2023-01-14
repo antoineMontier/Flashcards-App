@@ -71,6 +71,7 @@ class FlashCards{
         bool answer_shown;
         const int test_button_w = 200;
         const int test_button_h = 60;
+        int focus;
 
         int m_x, m_y;
 
@@ -121,6 +122,8 @@ class FlashCards{
         void displayNextButton();
 
         bool package_is_already_loaded(std::string package_title);
+
+        void update_underline();
 };
 
 
