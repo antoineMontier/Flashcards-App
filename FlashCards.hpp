@@ -72,6 +72,8 @@ class FlashCards{
         const int test_button_w = 200;
         const int test_button_h = 60;
 
+        int m_x, m_y;
+
         LinkedList<Package*> *packages;
 
         void catchFlashReadingError(std::ifstream *reader, const char * error_message);

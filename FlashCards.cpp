@@ -45,7 +45,7 @@ FlashCards::~FlashCards(){
 }
 
 void FlashCards::run(){
-                                readDocument("one.flash");//to be removed
+                   //             readDocument("one.flash");//to be removed
 
     int txt_heightt = s->H()*.33;
     while(s->isRunning()){//main loop
@@ -90,6 +90,8 @@ void FlashCards::run(){
                 break;
 
             case SDL_MOUSEMOTION:
+                m_x = e.button.x;
+                m_y = e.button.y;
                 if(screen == HOME){
                     txt_heightt = s->H()*.33;
                     for(int i = 0; i < packages->size(); i++){
@@ -190,21 +192,20 @@ void FlashCards::run(){
                         package_advancement = (package_advancement + 1) % packages->get(package_testing)->question_count();
                         hint_shown = answer_shown = false;
                     }
-                    break;            
-
-
+                    break;
 
                 case SDLK_BACKSPACE:
                     if(buffer_id == 0)
                         break;
                     if(buffers[buffer_id].length() != 0)
                         buffers[buffer_id].pop_back();
+                    break;
 
                 case SDLK_RETURN:
-                    if(typingNow)
-                        typingNow = 0;
-                    else if(!typingNow)
-                        typingNow = buffer_id;
+                    if(screen == SETTINGS){
+                        readDocument(buffers[buffer_id] + ".flash");
+                        buffers[buffer_id] = "";
+                    }
                     break;
 
 
@@ -248,6 +249,8 @@ void FlashCards::displaySettingsButton(){
                         s->H()*.07*0.1,
                         buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
     }
+    if(s->rollover(m_x, m_y, s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.07))
+        s->filledRect(s->W()*0.01, s->H()*0.01, s->H()*0.07, s->H()*0.07, 5, buttonColor.r*.4, buttonColor.g*.4, buttonColor.b*.4, buttonColor.a*.2);
 }
 
 void FlashCards::displayReturnButton(){
@@ -256,11 +259,16 @@ void FlashCards::displayReturnButton(){
     TTF_SizeText(global, "home", &tmp_w, &tmp_y);
     s->text(75 - tmp_w/2, 40 - tmp_y/2, "home", global, buttonFontColor.r, buttonFontColor.g, buttonFontColor.b, buttonFontColor.a);
     s->emptyRect(75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1, 10, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
+    if(s->rollover(m_x, m_y, 75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1))
+        s->filledRect(75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1, 10, buttonColor.r*.4, buttonColor.g*.4, buttonColor.b*.4, buttonColor.a*.2);
+
 }
 
 void FlashCards::displayCreateButton(){
     s->emptyRect(s->W()*.01, s->H()*.47, 120, 3*TTF_FontHeight(medium), 5, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
     s->paragraph(s->W()*.01 + 120*.5, s->H()*.47, 200, "Create\na new\npackage", medium, CENTER, buttonFontColor.r, buttonFontColor.g, buttonFontColor.b, buttonFontColor.a);
+    if(s->rollover(m_x, m_y, s->W()*.01, s->H()*.47, 120, 3*TTF_FontHeight(medium)))
+        s->filledRect(s->W()*.01, s->H()*.47, 120, 3*TTF_FontHeight(medium), 5, buttonColor.r*.4, buttonColor.g*.4, buttonColor.b*.4, buttonColor.a*.2);
 }
 
 void FlashCards::homeScreen(){
