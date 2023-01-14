@@ -8,13 +8,15 @@ FlashCards::FlashCards(){
     s->setFont(&global, "Roboto_m.ttf", 30);
     s->setFont(&small, "Roboto_m.ttf", 18);
     s->setFont(&medium, "Roboto_m.ttf", 22);
-    title = {60, 60, 60, 255};
-    background = {150, 150, 230, 255};
-    buttonColor = {100, 100, 100, 255};
-    buttonFontColor = {0, 128, 255, 255};
-    answerColor = {0, 255, 0, 255};
-    hintColor = {0, 0, 255, 255};
-    nextColor = {255, 0, 0, 255};
+
+    title = {59, 44, 53, 255};
+    background = {86, 157, 229, 255};
+    buttonColor = {93, 80, 88, 255};
+    buttonFontColor = {43, 80, 170, 255};
+    answerColor = {80, 21, 55, 255};
+    hintColor = {60, 27, 67, 255};
+    nextColor = {58, 90, 64, 255};
+
     typingAllowed = false;
     typingNow = 0;
     buffers[0] = "";
@@ -113,7 +115,7 @@ void FlashCards::run(){
                             buffers[buffer_id] = "";
                             buffers_limits[buffer_id] = file_max_lenght;
                             screen = SETTINGS;
-                        }else if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.47, 120, 100)){
+                        }else if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.47, 120, 3*TTF_FontHeight(medium))){
                             buffer_id = 1;
                             typingAllowed = true;
                             buffers[buffer_id] = "";
@@ -169,6 +171,29 @@ void FlashCards::run(){
             case SDL_KEYDOWN: // SDL_KEYDOWN : hold a key            SDL_KEYUP : release a key
                 switch (e.key.keysym.sym){ // returns the key ('0' ; 'e' ; 'SPACE'...)
 
+                case SDLK_h:
+                    if(screen >= TEST_OFFSET)
+                        hint_shown = true;
+                    break;                
+
+                case SDLK_a:
+                    if(screen >= TEST_OFFSET)
+                        answer_shown = true;
+                    break;                
+
+                case SDLK_SPACE:
+                    if(!hint_shown && packages->get(package_testing)->get_question(package_advancement)->hint.length() > 0)
+                        hint_shown = true;
+                    else if(!answer_shown)
+                        answer_shown = true;
+                    else{//next
+                        package_advancement = (package_advancement + 1) % packages->get(package_testing)->question_count();
+                        hint_shown = answer_shown = false;
+                    }
+                    break;            
+
+
+
                 case SDLK_BACKSPACE:
                     if(buffer_id == 0)
                         break;
@@ -203,7 +228,7 @@ void FlashCards::run(){
             }
         }
         //s->displayPortions(3, 20);
-        s->refreshAndDetails();
+        s->refresh();
     }
     //print the packages loaded in memory 
     printPackages();
@@ -229,15 +254,13 @@ void FlashCards::displayReturnButton(){
     int tmp_w, tmp_y;
     //border
     TTF_SizeText(global, "home", &tmp_w, &tmp_y);
-    s->text(75 - tmp_w/2, 40 - tmp_y/2, "home", global, buttonFontColor.r, buttonFontColor.b, buttonFontColor.b, buttonFontColor.a);
+    s->text(75 - tmp_w/2, 40 - tmp_y/2, "home", global, buttonFontColor.r, buttonFontColor.g, buttonFontColor.b, buttonFontColor.a);
     s->emptyRect(75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1, 10, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
 }
 
 void FlashCards::displayCreateButton(){
-    s->emptyRect(s->W()*.01, s->H()*.47, 120, 100, 5, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
-    s->text(s->W()*.01 + 10, s->H()*.47, "Create", global, buttonFontColor.r, buttonFontColor.b, buttonFontColor.b, buttonFontColor.a);
-    s->text(s->W()*.01 + 15, s->H()*.47 + 30, "a new", global, buttonFontColor.r, buttonFontColor.b, buttonFontColor.b, buttonFontColor.a);
-    s->text(s->W()*.01 + 4, s->H()*.47 + 60, "package", global, buttonFontColor.r, buttonFontColor.b, buttonFontColor.b, buttonFontColor.a);
+    s->emptyRect(s->W()*.01, s->H()*.47, 120, 3*TTF_FontHeight(medium), 5, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
+    s->paragraph(s->W()*.01 + 120*.5, s->H()*.47, 200, "Create\na new\npackage", medium, CENTER, buttonFontColor.r, buttonFontColor.g, buttonFontColor.b, buttonFontColor.a);
 }
 
 void FlashCards::homeScreen(){
