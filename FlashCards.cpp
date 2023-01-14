@@ -43,7 +43,7 @@ FlashCards::~FlashCards(){
 }
 
 void FlashCards::run(){
-    //                            readDocument("one.flash");//to be removed
+                                readDocument("one.flash");//to be removed
 
     int txt_heightt = s->H()*.33;
     while(s->isRunning()){//main loop
@@ -503,6 +503,7 @@ void FlashCards::openUnderlined(){
 }
 
 void FlashCards::testScreen(int package_id){
+    int nb_questions = packages->get(package_id)->question_count();
     if(package_id < 0)
         return;
     if(package_id >= packages->size()){
@@ -521,17 +522,20 @@ void FlashCards::testScreen(int package_id){
     //=== breakline
     s->line(0, 10 + hh + 20, s->W(), 10 + hh + 20);
     //=== display the package advancement bar : 
-    progressionBarHorizontal(15, s->H() - 30, 200, 15, 10, package_advancement, packages->get(package_id)->question_count());
+    progressionBarHorizontal(15, s->H() - 30, 200, 15, 10, package_advancement, nb_questions);
     // and its percentage
-
-    // TODO
+    if(nb_questions != 0){
+        int percentage = package_advancement*100 / nb_questions;
+        std::string strr_buff = std::to_string(percentage) + " %";
+        s->text(225, s->H() - 30, strr_buff.c_str(), small, buttonFontColor.r, buttonFontColor.g, buttonFontColor.b, buttonFontColor.a);
+    }
 
     //=== display the question
     s->paragraph(s->W()*.5, s->H()*.1, packages->get(package_id)->get_question(package_advancement)->question.c_str(), medium);
     //=== display the hint
-    if(hint_shown || answer_shown)
+    if((hint_shown || answer_shown) && packages->get(package_id)->get_question(package_advancement)->hint.length() > 0)
         s->paragraph(s->W()*.25 , s->H()*.5, s->W()*.2, packages->get(package_id)->get_question(package_advancement)->hint.c_str(), medium, CENTER, hintColor.r, hintColor.g, hintColor.b, hintColor.a);
-    else
+    else if(packages->get(package_id)->get_question(package_advancement)->hint.length() > 0)
         displayHintButton();
     //=== display the answer
     if(answer_shown)
@@ -543,10 +547,10 @@ void FlashCards::testScreen(int package_id){
 }
 
 void FlashCards::progressionBarHorizontal(int x, int y, int w, int h, int rounding, int value, int total){
+    if(!(value <= 0 || value > total || total <= 0))//wrong arguments gestion
+        s->filledRect(x, y, w*(value/(double)total), h, rounding, buttonFontColor.r, buttonFontColor.g, buttonFontColor.b, buttonFontColor.a);
     s->emptyRect(x, y, w, h, rounding, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
-    if(value <= 0 || value > total || total <= 0)//wrong arguments gestion
-        return;
-    s->filledRect(x, y, w*(value/(double)total), h, rounding, buttonFontColor.r, buttonFontColor.g, buttonFontColor.b, buttonFontColor.a);
+
 }
 
 void FlashCards::displayAnswerButton(){

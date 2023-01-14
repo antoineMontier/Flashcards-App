@@ -63,7 +63,7 @@ class FlashCards{
         std::string buffers[3];
         int buffers_limits[3];
         const int file_max_lenght = 13;
-        const char*buffer;
+        char*buffer;
         int tmp_h, tmp_w;
         int package_testing;//-1 if no package selected
         int package_advancement;//0 if no advancement
@@ -92,7 +92,7 @@ class FlashCards{
 
         void displaySettingsButton();
 
-        void displayReturnButton();//TODO : fix the rollover (only working when the text (not the button) is pressed)
+        void displayReturnButton();
 
         void displayCreateButton();
 
