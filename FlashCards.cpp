@@ -43,7 +43,7 @@ FlashCards::~FlashCards(){
 }
 
 void FlashCards::run(){
-                                readDocument("one.flash");//to be removed
+    //                            readDocument("one.flash");//to be removed
 
     int txt_heightt = s->H()*.33;
     while(s->isRunning()){//main loop
@@ -103,6 +103,9 @@ void FlashCards::run(){
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
+                int tmp_w, tmp_y;
+                //border
+                TTF_SizeText(global, "home", &tmp_w, &tmp_y);
                 switch(screen){
                     case HOME:
                         if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.01, s->H()*.07, s->H()*.07)){
@@ -121,7 +124,7 @@ void FlashCards::run(){
                         break;
 
                     case SETTINGS:
-                        if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.01, s->H()*.07, s->H()*.035)){
+                        if(s->rollover(e.button.x, e.button.y, 75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1)){//return
                             typingAllowed = false;
                             typingNow = false;
                             buffers[buffer_id = 0] = "";//clean buffer
@@ -136,7 +139,7 @@ void FlashCards::run(){
                         break;
                     
                     case CREATION:
-                        if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.01, s->H()*.07, s->H()*.035)){
+                        if(s->rollover(e.button.x, e.button.y, 75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1)){//return
                             typingAllowed = false;
                             typingNow = false;
                             buffers[buffer_id = 0] = "";//clean buffer
@@ -146,7 +149,7 @@ void FlashCards::run(){
 
                     default:
                         if(screen >= TEST_OFFSET && screen < TEST_OFFSET + MAX_PACKAGES){
-                            if(s->rollover(e.button.x, e.button.y, s->W()*.01, s->H()*.01, s->H()*.07, s->H()*.035)){//return button
+                            if(s->rollover(e.button.x, e.button.y, 75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1)){//return button
                                 screen = HOME;
                                 package_testing = -1;
                                 package_advancement = 0;
@@ -223,8 +226,11 @@ void FlashCards::displaySettingsButton(){
 }
 
 void FlashCards::displayReturnButton(){
-    s->text(s->W()*0.02, s->H()*0.02, "return", small, buttonFontColor.r, buttonFontColor.b, buttonFontColor.b, buttonFontColor.a);
-    s->emptyRect(s->W()*0.01, s->H()*0.015, s->H()*0.09, s->H()*0.045, 5);
+    int tmp_w, tmp_y;
+    //border
+    TTF_SizeText(global, "home", &tmp_w, &tmp_y);
+    s->text(75 - tmp_w/2, 40 - tmp_y/2, "home", global, buttonFontColor.r, buttonFontColor.b, buttonFontColor.b, buttonFontColor.a);
+    s->emptyRect(75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1, 10, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
 }
 
 void FlashCards::displayCreateButton(){
@@ -352,10 +358,12 @@ bool FlashCards::readDocument(std::string filename){
                             while(line[i] != '>'){
                                 title += line[i++];
                             }
-                            Package *p = new Package(title);
-                            packages->pushTail(p);
-                            inPackage = true;
-                            i = line.length();//stop the for loop
+                            if(!package_is_already_loaded(title) || packages->size() == 0){
+                                Package *p = new Package(title);
+                                packages->pushTail(p);
+                                inPackage = true;
+                                i = line.length();//stop the for loop
+                            }
                         }
                     }
             }
@@ -573,4 +581,10 @@ void FlashCards::displayNextButton(){
     s->text(s->W()*.5 - tmp_w/2, s->H()*.4 - tmp_y/2, "next", global, background.r, background.g, background.b, background.a);
 }
 
+bool FlashCards::package_is_already_loaded(std::string package_title){
+    for(int i=0; i< packages->size();i++)
+        if(packages->get(i)->getTitle() == package_title)
+            return true;
+    return false;
+}
 

@@ -117,6 +117,8 @@ class FlashCards{
         void displayHintButton();
 
         void displayNextButton();
+
+        bool package_is_already_loaded(std::string package_title);
 };
 
 
