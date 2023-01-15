@@ -46,7 +46,7 @@ FlashCards::~FlashCards(){
 }
 
 void FlashCards::run(){
-    readDocument("one.flash");//to be removed
+    //readDocument("one.flash");//to be removed
     while(s->isRunning()){//main loop
         switch(screen){
             

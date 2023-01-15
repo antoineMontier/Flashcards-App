@@ -25,15 +25,119 @@
 
 </p>
 
-<p=other_package>
+<p=general_questions>
 <Q>
-<q>this is the first question</q>       <h>there is a useless hint here</h>     <a>answer is not interesting</a>
+<q>What is the value of x\n in the equation 2x + 3 = 7?</q>
+<a>x = 2</a>
 </Q>
+
 <Q>
-<q>when started the 1st world war</q>       <h>it ended in 1918</h>     <a>1914</a>
+<q>What is the slope of\n the line y = 2x + 3?</q>
+<a>The slope is 2</a>
 </Q>
+
 <Q>
-<q>what is sq(-20)</q>      <h>sq(-1) = i</h>     <a>sq(-20) = 2i*sq(5)</a>
+<q>What is the Pythagorean theorem?</q>
+<h>The theorem is related to\nthe relation between\nthe sides of a\nright triangle</h>
+<a>The Pythagorean theorem states\nthat the square of the length\nof the hypotenuse of a right\ntriangle is equal to the sum of the\nsquares of the lengths of\nthe other two sides</a>
 </Q>
+
+<Q>
+<q>What is the integral of x^2?</q>
+<a>The integral of x^2 is (x^3)/3 + C\nwhere C is a constant</a>
+</Q>
+
+<Q>
+<q>What is the name of\nthe capital of France?</q>
+<h>France is a country in Europe</h>
+<a>Paris</a>
+</Q>
+
+<Q>
+<q>What is the perimeter of\na square with sides of length 4?</q>
+<h>A square has all sides equal</h>
+<a>The perimeter of the square is 16</a>
+</Q>
+
+<Q>
+<q>What is the formula\nfor the volume of a cylinder?</q>
+<h>A cylinder is a three-dimensional shape</h>
+<a>The formula for the volume of\na cylinder is V = pi * r^2 * h\nwhere r is the radius and h is the height</a>
+</Q>
+
+<Q>
+<q>What is the value of e^(i*pi)?</q>
+<a>The value of e^(i*pi) is -1</a>
+</Q>
+
+<Q>
+<q>What is the difference between a compound and a mixture?</q>
+<h>A compound is a pure substance\nmade of two or more\nelements chemically combined</h>
+<a> while a mixture is a combination of two\nor more substances that are not chemically combined</a>
+</Q>
+
+<Q>
+<q>What is the name of the process by\nwhich plants make their own food?</q>
+<h>This process uses energy from sunlight</h>
+<a>Photosynthesis</a>
+</Q>
+
+<Q>
+<q>What is the value of sin(90)?</q>
+<a>sin(90) = 1</a>
+</Q>
+
+<Q>
+<q>What is the formula for\nthe area of a triangle?</q>
+<a>Area of a triangle is (base * height) / 2</a>
+</Q>
+
+<Q>
+<q>What is the name of the famous\htheorem that connects the ratio of the\nsides of a right-angled triangle?</q>
+<a>The theorem is called the Pythagorean theorem</a>
+</Q>
+
+<Q>
+<q>What is the chemical\nformula for water?</q>
+<a>H2O</a>
+</Q>
+
+<Q>
+<q>What is the name of the famous\nphysicist who developed the theory of relativity?</q>
+<a>Albert Einstein</a>
+</Q>
+
+<Q>
+<q>What is the value of cos(60)?</q>
+<h>cos(60) is related to\nthe regular hexagon</h>
+<a>The value of cos(60) is 0.5</a>
+</Q>
+
+<Q>
+<q>What is the formula for the force of gravity?</q>
+<h>The formula for the force of\ngravity is related to the mass and\ndistance of the objects</h>
+<a>The formula for the force of\ngravity is F = G * (m1 * m2) / r^2\nwhere G is the gravitational constant\nm1 and m2 are the masses of the objects\nr is the distance between the centers of the objects</a>
+</Q>
+
+<Q>
+<q>What is the name of the famous mathematician\nwho developed the concept of a mathematical group?</q>
+<h>This mathematician was born in\nGermany and lived in the 19th century</h>
+<a>The mathematician is called\nCarl Friedrich Gauss</a>
+</Q>
+
+<Q>
+<q>What is the chemical formula\nfor carbon dioxide?</q>
+<h>It's a gas that is a product\nof respiration and combustion</h>
+<a>CO2</a>
+</Q>
+
+<Q>
+<q>What is the name of the famous scientist\nwho developed the theory of evolution?</q>
+<h>This scientist was born in England\nand lived in the 19th century</h>
+<a>Charles Darwin</a>
+</Q>
+
+
+
 
 </p>
