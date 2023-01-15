@@ -175,6 +175,10 @@ void FlashCards::run(){
 
                         case SETTINGS:
                             focus = (focus + 1) % (2);//return, text input
+                            if(focus == 0)
+                                typingAllowed = true;
+                            else 
+                                typingAllowed = false;
                             break;
 
                         case CREATION:
@@ -221,6 +225,13 @@ void FlashCards::run(){
                     if(screen == SETTINGS){
                         readDocument(buffers[buffer_id] + ".flash");
                         buffers[buffer_id] = "";
+                        if(focus == 1){
+                            typingAllowed = false;
+                            typingNow = false;
+                            buffers[buffer_id = 0] = "";//clean buffer
+                            screen = HOME;
+                            focus = -1;
+                        }
                     }else if(screen == HOME){
                         if(focus == packages->size()){
                             buffer_id = 1;
@@ -293,7 +304,7 @@ void FlashCards::displayReturnButton(){
     TTF_SizeText(global, "home", &tmp_w, &tmp_y);
     s->text(75 - tmp_w/2, 40 - tmp_y/2, "home", global, buttonFontColor.r, buttonFontColor.g, buttonFontColor.b, buttonFontColor.a);
     s->emptyRect(75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1, 10, buttonColor.r, buttonColor.g, buttonColor.b, buttonColor.a);
-    if(s->rollover(m_x, m_y, 75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1))
+    if(s->rollover(m_x, m_y, 75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1) || (screen == SETTINGS && focus == 1))
         s->filledRect(75 - tmp_w*.55, 40 - tmp_y*.55, tmp_w*1.1, tmp_y*1.1, 10, buttonColor.r*.4, buttonColor.g*.4, buttonColor.b*.4, buttonColor.a*.2);
 
 }
