@@ -277,7 +277,7 @@ void FlashCards::run(){
         s->refresh();
     }
     //print the packages loaded in memory 
-    printPackages();
+    //printPackages();
 
 }
 
@@ -682,20 +682,6 @@ void FlashCards::update_underline(){
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

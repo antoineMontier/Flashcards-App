@@ -11,17 +11,117 @@
 </Q>
 </p>
 
-<p=second>
+<p=permis_hauturier>
 
 <Q>
-<q>this is the first question</q>   <h>there is a useless hint here</h>     <a>answer is not interesting</a>
+<q>Principe de la projection mercator</q> <a>projeter la sphere terrestre sur un\ncylindre puis sur un plan</a>
 </Q>
+
 <Q>
-<q>when started the 1st world war</q>       <h>it ended in 1918</h>     <a>1914</a>
+<q>La projection mercator conserve quoi ? (angles/distances)</q> <a>elle conserve les angles\net deforme les distances</a>
 </Q>
+
 <Q>
-<q>what is sq(-20)</q>      <h>sq(-1) = i</h>     <a>sq(-20) = 2i*sq(5)</a>
+<q>La latitude 'L' peut etre assimilee a quoi ? x ou y ?</q> <h>on parle aussi de parralleles</h> <a> la latitude peut etre assimilee\n a une ordonnee, y</a>
 </Q>
+
+<Q>
+<q>pole nord, L =</q> <a> L = 90°N</a>
+</Q>
+
+<Q>
+<q>pole nord, L =</q> <a> L = 90°S</a>
+</Q>
+
+<Q>
+<q>La longitude 'G' peut etre assimilee a quoi ? x ou y ? </q> <h>on parle aussi de meridiens</h><a>abscisse donc x </a>
+</Q>
+
+<Q>
+<q>donner la longitude et latitude de reference</q><h>greenwitch et equateur</h> <a>L = 0° ; G = 0° </a>
+</Q>
+
+<Q>
+<q>definition du Mille marin</q> <a>1 minute (1') d'angle</a>
+</Q>
+
+<Q>
+<q>1 mille marin = </q> <h> 1minute d'angle = 1 mille marin</h> <a> 1.852km = 40 000/(360*60)\navec 40 000km = circonf. terrestre</a>
+</Q>
+
+<Q>
+<q>instrument de mesure de vitesse surfacique</q> <a>loch-speedometre</a>
+</Q>
+
+<Q>
+<q>Definion du nord vrai Nv</q> <a>Axe de rotation terrestre</a>
+</Q>
+
+<Q>
+<q>Definition du nord magnetique Nm</q><h>different de Nv</h> <a>Centre magnetique terrestre</a>
+</Q>
+
+<Q>
+<q>Definition du Nord Compas Nc</q> <a>direction donnee par le compas, non\nexact a cause des masses metaliques</a>
+</Q>
+
+<Q>
+<q>Definition de D</q> <h>D est la declinaison</h> <a>ecart d'angle entre Nv et Nm\nsens horaire = positif\nactuellement D < 0</a>
+</Q>
+
+<Q>
+<q>Definition de d</q> <h>d est la deviation</h> <a>Ecart d'angle entre Nc et Nm\nvarie selon la direction du navire</a>
+</Q>
+
+<Q>
+<q>Definition de W</q> <h>W est la declinaison</h> <a>W = D + d\nsert pour tracer sur une carte en fonction de Nv</a>
+</Q>
+
+<Q>
+<q>Definition de Cc</q> <h>Cc = cap compas</h> <a>Cc est l'angle entre Nc et l'axe du navire\nlu a bord</a>
+</Q>
+
+<Q>
+<q>Definition de Cv</q> <h>Cv = cap vrai</h> <a>Cc est l'angle entre Nv et l'axe du navire\nutilie pour le trace d'une carte</a>
+</Q>
+
+<Q>
+<q>Definition de der</q> <h>der = derive</h> <a>Angle entre la Cv et la Rs, positif ou neg</a>
+</Q>
+
+<Q>
+<q>Definition de Rs</q> <h>Rs = Route surfacique</h><a>Rs = Cv + der</a>
+</Q>
+
+<Q>
+<q>derive tribord</q> <a>tribord ++\nbabord --\npas de signe donne a l'examen pour la derive</a>
+</Q>
+
+<Q>
+<q>comment connaitre sa derive a bord ?</q> <a>relever l'axe du sillage et le comparer a Cv</a>
+</Q>
+
+<Q>
+<q>Definition de R</q> <a>C'est la route (non surfacique), n'a de sens que sur une carte </a>
+</Q>
+
+<Q>
+<q>Derive compensee</q> <a>Derive anticipee par un changement\nde cap par le navire\n!=derive non compensee</a>
+</Q>
+
+<Q>
+<q>vocabulaire des fleches de vent</q> <h>hampe:\nbarbulles:</h><a>direction & sens\nintensite\n    demi = 5nd\n    complet = 10nd\n    triangle = 50nd</a>
+</Q>
+
+<Q>
+<q>Definition de Zc</q><h>Zc = relevement compas</h> <a>difference d'angle entre Nc et l'objet a relever </a>
+</Q>
+
+<Q>
+<q>Definition de Zv</q><h>Zv = Relevement vrai</h> <a>Angle entre le Nv et l'objet\nutile avec une regle-rapporteur (règle cras)</a>
+</Q>
+
+
 
 </p>
 
